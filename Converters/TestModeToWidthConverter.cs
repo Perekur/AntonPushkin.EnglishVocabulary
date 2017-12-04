@@ -12,14 +12,12 @@ namespace PushkinA.EnglishVocabulary.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Length != 2) return 0;
+                var actualWidth = (double)values[0];
+                var isVisible1 = (bool)values[1];
+                var isVisible2 = values.Length==2 ? true : (bool)values[2];
 
-            var isTestMode = values[0] is bool ? (bool)values[0] : (bool)values[1];
-
-            var actualWidth = values[0] is bool ? (double)values[1] : (double)values[0];
-
-            return isTestMode ? 0 : actualWidth;
-        }
+                return isVisible1 && isVisible2 ? actualWidth: 0;
+            }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {

@@ -45,7 +45,14 @@
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
                     <GridView.Columns>
-                        <GridViewColumn DisplayMemberBinding="{Binding ForeignText}" Header="English" Width="{Binding ElementName=columnA, Path=ActualWidth, Mode=OneWay}"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding ForeignText}" Header="English">
+                            <GridViewColumn.Width>
+                                <MultiBinding Converter="{StaticResource testModeToWidthConverter}" Mode="OneWay">
+                                    <Binding ElementName="columnA" Path="ActualWidth" Mode="OneWay"/>
+                                    <Binding Path="IsForeignTextVisible" Mode="OneWay"/>
+                                </MultiBinding>
+                            </GridViewColumn.Width>
+                        </GridViewColumn>
                         <GridViewColumn>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
@@ -55,7 +62,8 @@
                             <GridViewColumn.Width>
                                 <MultiBinding Converter="{StaticResource testModeToWidthConverter}" Mode="OneWay">
                                     <Binding ElementName="columnB" Path="ActualWidth" Mode="OneWay"/>
-                                    <Binding Path="IsTestMode" Mode="OneWay"/>
+                                    <Binding Path="IsForeignTextVisible" Mode="OneWay"/>
+                                    <Binding Path="IsTranslationVisible" Mode="OneWay"/>
                                 </MultiBinding>
                             </GridViewColumn.Width>
                         </GridViewColumn>
@@ -63,7 +71,7 @@
                             <GridViewColumn.Width>
                                 <MultiBinding Converter="{StaticResource testModeToWidthConverter}" Mode="OneWay">
                                     <Binding ElementName="columnC" Path="ActualWidth" Mode="OneWay"/>
-                                    <Binding Path="IsTestMode" Mode="OneWay"/>
+                                    <Binding Path="IsTranslationVisible" Mode="OneWay"/>
                                 </MultiBinding>
                             </GridViewColumn.Width>
                         </GridViewColumn>

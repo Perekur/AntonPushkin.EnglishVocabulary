@@ -28,6 +28,19 @@
             <DataTemplate DataType="{x:Type vm:InputBoxViewModel}">
                 <vw:InputBoxView />
             </DataTemplate>
+
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+                <Setter Property="Margin" Value="3"/>
+                <Setter Property="Padding" Value="3"/>
+                <Setter Property="MinWidth" Value="300"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="MinLines" Value="4"/>
+            </Style>
+
+            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="3"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

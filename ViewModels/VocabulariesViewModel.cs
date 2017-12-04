@@ -44,18 +44,36 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             }
         }
         
-        private bool isTestMode;
-        public bool IsTestMode
+        private bool isForeignTextVisible=true;
+        public bool IsForeignTextVisible
         {
-            get { return isTestMode; }
-            set { isTestMode = value;
+            get { return isForeignTextVisible; }
+            set {
+                isForeignTextVisible = value;
 
                 foreach(var v in vocabularies)
                 {
-                    v.IsTestMode = value;
+                    v.IsForeignTextVisible = value;
                 }
 
-                RaisePropertyChanged(() => IsTestMode);
+                RaisePropertyChanged(() => IsForeignTextVisible);
+            }
+        }
+
+        private bool isTranslationVisible=true;
+        public bool IsTranslationVisible
+        {
+            get { return isTranslationVisible; }
+            set
+            {
+                isTranslationVisible = value;
+
+                foreach (var v in vocabularies)
+                {
+                    v.IsTranslationVisible = value;
+                }
+
+                RaisePropertyChanged(() => IsTranslationVisible);
             }
         }
 

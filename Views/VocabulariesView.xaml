@@ -33,10 +33,20 @@
 
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Width="5" />
 
-        <StackPanel Grid.Column="2">
-            <CheckBox IsChecked="{Binding IsTestMode}" Margin="6">Is Test (Hide translation)</CheckBox>
-            <ContentControl Content="{Binding Path=SelectedVocabularyList, Mode=OneWay}" />
-        </StackPanel>
+        <Grid Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <CheckBox  IsChecked="{Binding IsForeignTextVisible}" Margin="6">Is Foreign Text Visible</CheckBox>
+            <CheckBox Grid.Column="1" IsChecked="{Binding IsTranslationVisible}" Margin="6">Is Translation Visible</CheckBox>
+            <ContentControl Grid.Row="1" Grid.ColumnSpan="2" Content="{Binding Path=SelectedVocabularyList, Mode=OneWay}" />
+        </Grid>
     </Grid>
 </UserControl>
 

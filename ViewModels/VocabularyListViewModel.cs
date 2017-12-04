@@ -66,14 +66,25 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         }
 
 
-        private bool isTestMode;
-        public bool IsTestMode
+        private bool isForeignTextVisible=true;
+        public bool IsForeignTextVisible
         {
-            get { return isTestMode; }
+            get { return isForeignTextVisible; }
             set
             {
-                isTestMode = value;
-                RaisePropertyChanged(() => IsTestMode);
+                isForeignTextVisible = value;
+                RaisePropertyChanged(() => IsForeignTextVisible);
+            }
+        }
+
+        private bool isTranslationVisible=true;
+        public bool IsTranslationVisible
+        {
+            get { return isTranslationVisible; }
+            set
+            {
+                isTranslationVisible = value;
+                RaisePropertyChanged(() => IsTranslationVisible);
             }
         }
 
@@ -85,6 +96,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             NextCommand.RaiseCanExecuteChanged();
             PrevCommand.RaiseCanExecuteChanged();
             AddCommand.RaiseCanExecuteChanged();
+            EditCommand.RaiseCanExecuteChanged();
             SaveCommand.RaiseCanExecuteChanged();
             DelCommand.RaiseCanExecuteChanged();
         }
@@ -154,7 +166,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         private void EditCommandHandler()
         {
             var vm = new VocabularyItemViewModel(
-                (item) => { QuestionList.Add(item); SaveCommand.Execute(null); }
+                (item) => { SaveCommand.Execute(null); }
             );
             vm.Question = Question;
             dialogService.ShowDialog(vm, "modalDialog");
