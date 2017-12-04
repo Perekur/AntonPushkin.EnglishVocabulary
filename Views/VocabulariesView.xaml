@@ -33,7 +33,10 @@
 
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Width="5" />
 
-        <ContentControl Content="{Binding Path=SelectedVocabularyList, Mode=OneWay}" Grid.Column="2"/>
+        <StackPanel Grid.Column="2">
+            <CheckBox IsChecked="{Binding IsTestMode}" Margin="6">Is Test (Hide translation)</CheckBox>
+            <ContentControl Content="{Binding Path=SelectedVocabularyList, Mode=OneWay}" />
+        </StackPanel>
     </Grid>
 </UserControl>
 

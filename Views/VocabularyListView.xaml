@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vm="clr-namespace:PushkinA.EnglishVocabulary.ViewModels"
+             xmlns:cnv="clr-namespace:PushkinA.EnglishVocabulary.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -14,6 +15,8 @@
             <MenuItem Command="{Binding SaveCommand}" Header="Save" Style="{x:Null}"/>
             <MenuItem Command="{Binding ParseFileCommand}" Header="Parse txt file" Style="{x:Null}"/>
         </ContextMenu>
+
+        <cnv:TestModeToWidthConverter x:Key="testModeToWidthConverter"/>
     </UserControl.Resources>
 
     <Grid>
@@ -43,14 +46,27 @@
                 <GridView AllowsColumnReorder="False">
                     <GridView.Columns>
                         <GridViewColumn DisplayMemberBinding="{Binding ForeignText}" Header="English" Width="{Binding ElementName=columnA, Path=ActualWidth, Mode=OneWay}"/>
-                        <GridViewColumn Width="20">
+                        <GridViewColumn>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="-" Margin="0" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="-" HorizontalAlignment="Center" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
+                            <GridViewColumn.Width>
+                                <MultiBinding Converter="{StaticResource testModeToWidthConverter}" Mode="OneWay">
+                                    <Binding ElementName="columnB" Path="ActualWidth" Mode="OneWay"/>
+                                    <Binding Path="IsTestMode" Mode="OneWay"/>
+                                </MultiBinding>
+                            </GridViewColumn.Width>
                         </GridViewColumn>
-                        <GridViewColumn DisplayMemberBinding="{Binding NativeText}" Header="Translation" Width="{Binding ElementName=columnC, Path=ActualWidth, Mode=OneWay}"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding NativeText}" Header="Translation" >
+                            <GridViewColumn.Width>
+                                <MultiBinding Converter="{StaticResource testModeToWidthConverter}" Mode="OneWay">
+                                    <Binding ElementName="columnC" Path="ActualWidth" Mode="OneWay"/>
+                                    <Binding Path="IsTestMode" Mode="OneWay"/>
+                                </MultiBinding>
+                            </GridViewColumn.Width>
+                        </GridViewColumn>
                         <GridViewColumn DisplayMemberBinding="{Binding ShowDateStart, StringFormat='dd.MM.yyyy'}" Header="ShowDateStart" Width="{Binding ElementName=columnD, Path=ActualWidth, Mode=OneWay}"/>
                         <GridViewColumn DisplayMemberBinding="{Binding ShowDateEnd, StringFormat='dd.MM.yyyy'}" Header="ShowDateEnd" Width="{Binding ElementName=columnE, Path=ActualWidth, Mode=OneWay}"/>
                     </GridView.Columns>

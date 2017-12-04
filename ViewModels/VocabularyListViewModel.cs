@@ -65,6 +65,19 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             }
         }
 
+
+        private bool isTestMode;
+        public bool IsTestMode
+        {
+            get { return isTestMode; }
+            set
+            {
+                isTestMode = value;
+                RaisePropertyChanged(() => IsTestMode);
+            }
+        }
+
+
         private void RaiseCanExecuteChanged()
         {
             RaisePropertyChanged();

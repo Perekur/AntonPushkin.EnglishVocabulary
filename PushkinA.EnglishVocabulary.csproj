@@ -71,6 +71,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\TestModeToWidthConverter.cs" />
     <Compile Include="Infrastructure\DialogViewModelBase.cs" />
     <Compile Include="Model\Question.cs" />
     <Compile Include="Services\DataService.cs" />

@@ -43,6 +43,21 @@ namespace PushkinA.EnglishVocabulary.ViewModels
                 }
             }
         }
+        
+        private bool isTestMode;
+        public bool IsTestMode
+        {
+            get { return isTestMode; }
+            set { isTestMode = value;
+
+                foreach(var v in vocabularies)
+                {
+                    v.IsTestMode = value;
+                }
+
+                RaisePropertyChanged(() => IsTestMode);
+            }
+        }
 
         private readonly IDialogService dialogService;
         private readonly IDataService<Question> dataService;
