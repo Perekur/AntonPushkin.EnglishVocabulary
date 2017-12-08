@@ -38,6 +38,8 @@ namespace PushkinA.EnglishVocabulary.ViewModels
                 // Create run time view services and models
                 SimpleIoc.Default.Register<IDataService<Question>>(() => new DataService<Question>());
                 SimpleIoc.Default.Register<IDialogService, DialogService>();
+                SimpleIoc.Default.Register<ITranslationService, TranslationService>();
+                SimpleIoc.Default.Register<ISpeachService, SpeachService>();
             }
 
             SimpleIoc.Default.Register<MainViewModel>();
@@ -50,8 +52,12 @@ namespace PushkinA.EnglishVocabulary.ViewModels
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
         }
-        
-        public static void Cleanup()
+
+        public static T Resolve<T>() {
+                return ServiceLocator.Current.GetInstance<T>();
+        }
+
+        public void Cleanup()
         {
             // TODO Clear the ViewModels
         }

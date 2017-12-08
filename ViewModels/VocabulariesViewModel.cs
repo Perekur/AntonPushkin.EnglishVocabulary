@@ -77,8 +77,24 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             }
         }
 
+        private bool isSpeachWord;
+
+        public bool IsSpeachWord
+        {
+            get { return isSpeachWord; }
+            set {
+                isSpeachWord = value;                
+                foreach (var v in vocabularies)
+                {
+                    v.IsSpeachWord = value;
+                }
+                RaisePropertyChanged(() => IsTranslationVisible);
+            }
+        }
+
+
         private readonly IDialogService dialogService;
-        private readonly IDataService<Question> dataService;
+        private readonly IDataService<Question> dataService;        
 
         public VocabulariesViewModel(IDataService<Question> dataService, IDialogService dialogService)
         {

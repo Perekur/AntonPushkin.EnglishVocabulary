@@ -19,6 +19,8 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
         private ObservableCollection<Question> questionList;
 
+        private readonly ISpeachService speachService;
+
         public ObservableCollection<Question> QuestionList
         {
             get
@@ -46,6 +48,9 @@ namespace PushkinA.EnglishVocabulary.ViewModels
                     question = value;
                     RaisePropertyChanged(() => Question);
                     RaiseCanExecuteChanged();
+
+                    if (IsSpeachWord && speachService != null && question!=null)
+                        speachService.SpeachAsync(question.ForeignText);
                 }
             }
         }
@@ -76,6 +81,19 @@ namespace PushkinA.EnglishVocabulary.ViewModels
                 RaisePropertyChanged(() => IsForeignTextVisible);
             }
         }
+
+        private bool isSpeachWord;
+
+        public bool IsSpeachWord
+        {
+            get { return isSpeachWord; }
+            set {
+                isSpeachWord = value;
+                RaisePropertyChanged(() => IsForeignTextVisible);
+                RaiseCanExecuteChanged();
+            }
+        }
+
 
         private bool isTranslationVisible=true;
         public bool IsTranslationVisible
@@ -108,6 +126,8 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         {
             this.dataService = dataService;
             this.dialogService = dialogService;
+
+            this.speachService = ViewModelLocator.Resolve<ISpeachService>();
 
             QuestionList = new ObservableCollection<Question>();
 

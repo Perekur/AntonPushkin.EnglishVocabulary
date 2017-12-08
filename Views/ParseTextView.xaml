@@ -37,12 +37,11 @@
 
             <StackPanel Orientation="Horizontal" Grid.Column="2" Height="30">
                 <Button Command="{Binding BrowseFileCommand}"  Width="30" Margin="3">...</Button>
-                <Button Command="{Binding ParseFileCommand}" Width="50" Margin="3">Parse</Button>
             </StackPanel>
         </Grid>
 
         <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Right" Height="30">
-            <Button Content="Save" Command="{Binding SaveCommand}" Width="100" Margin="3"/>
+            <Button Content="Parse (Save)" Command="{Binding ParseFileCommand}" Width="100" Margin="3"/>
             <Button Content="Cancel" Command="{Binding CancelCommand}" Width="100" Margin="3"/>
         </StackPanel>
     </Grid>

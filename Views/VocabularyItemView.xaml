@@ -5,13 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PushkinA.EnglishVocabulary.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="300">
+             d:DesignHeight="250" d:DesignWidth="400">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Background="White"/>
 
         <Grid>
             <Grid.ColumnDefinitions>
@@ -28,15 +30,18 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- Grid.Row=1 -->
                 <TextBlock Text="ForeignText" Grid.Row="1"></TextBlock>
-                <TextBox Text="{Binding Path=Question.ForeignText}" Grid.Row="1" Grid.Column="1" Margin="6"></TextBox>
+                <TextBox Text="{Binding Path=Question.ForeignText}" Grid.Row="1" Grid.Column="1" Margin="6"/>
+                <Button Command="{Binding SpeakForeignCommand}" Grid.Row="1" Grid.Column="2" Height="30">Speak</Button>
 
                 <!-- Grid.Row=2 -->
                 <TextBlock Text="NativeText" Grid.Row="2"></TextBlock>
-                <TextBox Text="{Binding Path=Question.NativeText}" Grid.Row="2" Grid.Column="1" Margin="6"></TextBox>
+                <TextBox Text="{Binding Path=Question.NativeText}" Grid.Row="2" Grid.Column="1" Margin="6"/>
+                <Button Command="{Binding SpeakNativeCommand}" Grid.Row="2" Grid.Column="2" Height="30">Speak</Button>
             </Grid>
 
             <Grid Grid.Column="1" VerticalAlignment="Top">
