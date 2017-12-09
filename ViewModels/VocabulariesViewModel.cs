@@ -5,6 +5,7 @@ using PushkinA.EnglishVocabulary.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -94,9 +95,9 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
 
         private readonly IDialogService dialogService;
-        private readonly IDataService<Question> dataService;        
+        private readonly IDataService<VocabularyRecord> dataService;        
 
-        public VocabulariesViewModel(IDataService<Question> dataService, IDialogService dialogService)
+        public VocabulariesViewModel(IDataService<VocabularyRecord> dataService, IDialogService dialogService)
         {
             this.dialogService = dialogService;
             this.dataService = dataService;
@@ -106,9 +107,17 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
         private void AddVocabularyCommandHandler()
         {
-            var vm = new InputBoxViewModel(CreateVocabularyList);
-            vm.Description = "Please, enter file name of new vocabulary list";
-            dialogService.ShowDialog(vm, "modalDialog");
+            int weekOfYear = DateTimeFormatInfo.CurrentInfo.Calendar.GetWeekOfYear(DateTime.Now, System.Globalization.CalendarWeekRule.FirstDay, DayOfWeek.Monday);
+            string defaultName = string.Format("Vocabulary{0}.{1:##}", DateTime.Now.Year, weekOfYear);
+
+            var strVocabularyName = dialogService.InputBox("Input value", defaultName, "Please, insert name of new Vocabulary");
+            if (string.IsNullOrEmpty(strVocabularyName)) return;
+
+            if (Vocabularies.Any(v => string.Compare(v.FileName, strVocabularyName, true) == 0))
+                dialogService.MessageBox(string.Format("Vocabulary '{0}' already exists.", strVocabularyName), "Warning");            
+            else
+                Vocabularies.Add(new VocabularyListViewModel(dataService, dialogService) { FileName = strVocabularyName });
+
             AddVocabularyCommand.RaiseCanExecuteChanged();
         }
 

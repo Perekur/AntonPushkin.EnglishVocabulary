@@ -17,8 +17,8 @@
             
             <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
 
-            <DataTemplate DataType="{x:Type vm:VocabularyItemViewModel}">
-                <vw:VocabularyItemView />
+            <DataTemplate DataType="{x:Type vm:VocabularyItemDialogViewModel}">
+                <vw:VocabularyItemDialogView />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type vm:ParseTextViewModel}">
@@ -27,6 +27,10 @@
 
             <DataTemplate DataType="{x:Type vm:InputBoxViewModel}">
                 <vw:InputBoxView />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:MessageBoxViewModel}">
+                <vw:MessageBoxView />
             </DataTemplate>
 
             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">

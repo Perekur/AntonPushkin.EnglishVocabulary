@@ -13,15 +13,15 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 {
     public class VocabularyListViewModel : ViewModelBase
     {
-        private readonly IDataService<Question> dataService;
+        private readonly IDataService<VocabularyRecord> dataService;
 
         private readonly IDialogService dialogService;
 
-        private ObservableCollection<Question> questionList;
+        private ObservableCollection<VocabularyRecord> questionList;
 
         private readonly ISpeachService speachService;
 
-        public ObservableCollection<Question> QuestionList
+        public ObservableCollection<VocabularyRecord> QuestionList
         {
             get
             {
@@ -37,8 +37,8 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             }
         }
 
-        private Question question;
-        public Question Question
+        private VocabularyRecord question;
+        public VocabularyRecord Question
         {
             get { return question; }
             set
@@ -122,14 +122,14 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public VocabularyListViewModel(IDataService<Question> dataService, IDialogService dialogService)
+        public VocabularyListViewModel(IDataService<VocabularyRecord> dataService, IDialogService dialogService)
         {
             this.dataService = dataService;
             this.dialogService = dialogService;
 
             this.speachService = ViewModelLocator.Resolve<ISpeachService>();
 
-            QuestionList = new ObservableCollection<Question>();
+            QuestionList = new ObservableCollection<VocabularyRecord>();
 
             NextCommand = new RelayCommand(NextCommandHandler, () => { return QuestionList.Contains(Question) && QuestionList.IndexOf(Question) < QuestionList.Count - 1; });
             PrevCommand = new RelayCommand(PrevCommandHandler, () => { return QuestionList.Contains(Question) && QuestionList.IndexOf(Question) > 0; });
@@ -150,7 +150,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             ParseFileCommand.RaiseCanExecuteChanged();
         }
 
-        private void SaveParsedWords(Question[] items)
+        private void SaveParsedWords(VocabularyRecord[] items)
         {
             foreach (var item in items)
             {
@@ -162,7 +162,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
         private void RefreshCommandHandler()
         {
-            QuestionList = new ObservableCollection<Question>(dataService.Get(FileName));
+            QuestionList = new ObservableCollection<VocabularyRecord>(dataService.Get(FileName));
             RaiseCanExecuteChanged();
         }
 
@@ -174,8 +174,8 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
         private void AddCommandHandler()
         {
-            var question = new Question() { ShowDateStart = DateTime.Now.Date, ShowDateEnd = DateTime.Now.Date.AddDays(3) };
-            var vm = new VocabularyItemViewModel(
+            var question = new VocabularyRecord() { ShowDateStart = DateTime.Now.Date, ShowDateEnd = DateTime.Now.Date.AddDays(3) };
+            var vm = new VocabularyItemDialogViewModel(
                 (item) => { QuestionList.Add(item); SaveCommand.Execute(null); }
             );
             vm.Question = question;
@@ -185,7 +185,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
         private void EditCommandHandler()
         {
-            var vm = new VocabularyItemViewModel(
+            var vm = new VocabularyItemDialogViewModel(
                 (item) => { SaveCommand.Execute(null); }
             );
             vm.Question = Question;
@@ -218,13 +218,13 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             RaiseCanExecuteChanged();
         }
 
-        public RelayCommand NextCommand { get; private set; }
-        public RelayCommand PrevCommand { get; private set; }
-        public RelayCommand AddCommand { get; private set; }        
-        public RelayCommand EditCommand { get; private set; }
-        public RelayCommand SaveCommand { get; private set; }
-        public RelayCommand DelCommand { get; private set; }
-        public RelayCommand RefreshCommand { get; private set; }
+        public RelayCommand NextCommand      { get; private set; }
+        public RelayCommand PrevCommand      { get; private set; }
+        public RelayCommand AddCommand       { get; private set; }        
+        public RelayCommand EditCommand      { get; private set; }
+        public RelayCommand SaveCommand      { get; private set; }
+        public RelayCommand DelCommand       { get; private set; }
+        public RelayCommand RefreshCommand   { get; private set; }
         public RelayCommand ParseFileCommand { get; private set; }
     }
 }

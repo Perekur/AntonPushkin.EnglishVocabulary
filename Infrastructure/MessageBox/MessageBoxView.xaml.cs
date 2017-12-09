@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace PushkinA.EnglishVocabulary.Views
 {
     /// <summary>
-    /// Interaction logic for VocabularyItemView.xaml
+    /// Interaction logic for InputBoxView.xaml
     /// </summary>
-    public partial class VocabularyItemView : UserControl
+    public partial class MessageBoxView : UserControl
     {
-        public VocabularyItemView()
+        public MessageBoxView()
         {
             InitializeComponent();
         }

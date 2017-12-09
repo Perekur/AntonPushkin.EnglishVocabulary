@@ -18,9 +18,9 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 {
     public class ParseTextViewModel : DialogViewModelBase
     {
-        private Action<Question[]> onSaveParsedQuestions;
+        private Action<VocabularyRecord[]> onSaveParsedQuestions;
 
-        public ParseTextViewModel(Action<Question[]> onSaveParsedQuestions)
+        public ParseTextViewModel(Action<VocabularyRecord[]> onSaveParsedQuestions)
         {
             this.onSaveParsedQuestions = onSaveParsedQuestions;
 
@@ -84,7 +84,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
                         }
                     }                   
 
-                    var questions = dicWords.OrderByDescending(i => i.Value).Select(q => new Question() { ForeignText = q.Key, NativeText = q.Value.ToString() }).ToArray();
+                    var questions = dicWords.OrderByDescending(i => i.Value).Select(q => new VocabularyRecord() { ForeignText = q.Key, NativeText = q.Value.ToString() }).ToArray();
 
                     dialog.Dispatcher.BeginInvoke(new Action(() => {
                         onSaveParsedQuestions(questions);

@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace PushkinA.EnglishVocabulary.ViewModels
 {
-    public class VocabularyItemViewModel:DialogViewModelBase
+    public class VocabularyItemDialogViewModel:DialogViewModelBase
     {
-        private Action<Question> onSaveItem;
+        private Action<VocabularyRecord> onSaveItem;
         private ITranslationService translationService;
         private ISpeachService speachService;
 
-        public VocabularyItemViewModel(Action<Question> onSaveItem)
+        public VocabularyItemDialogViewModel(Action<VocabularyRecord> onSaveItem)
 
         {
             Question = question;
@@ -29,7 +29,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             SaveCommand = new RelayCommand(SaveCommandHandler, ()=>Question!=null);
             CancelCommand = new RelayCommand(() => { Close(); });
 
-            TranslateEnglishCommand = new RelayCommand(TranslateEnglishCommandHandler, () => Question != null);
+            TranslateForeignCommand = new RelayCommand(TranslateForeignCommandHandler, () => Question != null);
             TranslateNativeCommand = new RelayCommand(TranslateNativeCommandHandler, () => Question != null);
 
             SpeakForeignCommand = new RelayCommand(SpeakForeignCommandHandler);
@@ -46,14 +46,14 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             speachService.SpeachAsync(Question.ForeignText);
         }
 
-        private async void TranslateEnglishCommandHandler()
+        private async void TranslateForeignCommandHandler()
         {
-            Question.ForeignText += translationService.Translate(Question.NativeText, "uk", "en") + "\r\n";
+            Question.ForeignText = translationService.Translate(Question.NativeText, "uk", "en") + (string.IsNullOrEmpty(Question.ForeignText) ? string.Empty : "\r\n") + Question.ForeignText;
         }
 
         private async void TranslateNativeCommandHandler()
         {
-            Question.NativeText += translationService.Translate(Question.ForeignText, "en", "uk") + "\r\n";
+            Question.NativeText += translationService.Translate(Question.ForeignText, "en", "uk") + (string.IsNullOrEmpty(Question.NativeText) ? string.Empty : "\r\n") + Question.NativeText;
         }
 
         private void SaveCommandHandler()
@@ -65,8 +65,8 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             }
         }
 
-        private Question question;
-        public Question Question
+        private VocabularyRecord question;
+        public VocabularyRecord Question
         {
             get
             {
@@ -86,7 +86,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         public RelayCommand SaveCommand { get; private set; }
         public RelayCommand CancelCommand { get; private set; }
 
-        public RelayCommand TranslateEnglishCommand { get; private set; }
+        public RelayCommand TranslateForeignCommand { get; private set; }
         public RelayCommand TranslateNativeCommand { get; private set; }
 
         public RelayCommand SpeakForeignCommand { get; private set; }

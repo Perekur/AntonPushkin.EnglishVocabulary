@@ -36,7 +36,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             if (!ViewModelBase.IsInDesignModeStatic)
             {
                 // Create run time view services and models
-                SimpleIoc.Default.Register<IDataService<Question>>(() => new DataService<Question>());
+                SimpleIoc.Default.Register<IDataService<VocabularyRecord>>(() => new DataService<VocabularyRecord>());
                 SimpleIoc.Default.Register<IDialogService, DialogService>();
                 SimpleIoc.Default.Register<ITranslationService, TranslationService>();
                 SimpleIoc.Default.Register<ISpeachService, SpeachService>();

@@ -27,7 +27,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             }
         }        
 
-        public MainViewModel(IDataService<Question> dataService, IDialogService dialogService)
+        public MainViewModel(IDataService<VocabularyRecord> dataService, IDialogService dialogService)
         {
             var files = dataService.GetFiles();
             var vocabularies = files.Select(file => new VocabularyListViewModel(dataService, dialogService) { FileName = file }).ToArray();

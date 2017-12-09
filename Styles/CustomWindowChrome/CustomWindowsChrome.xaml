@@ -94,9 +94,9 @@
                                                 <Button Style="{StaticResource CloseButton}" HorizontalAlignment="Right" Margin="0,5,25,0" Click="cmdClose_Click"></Button>
                                                 <!--<Border Grid.Row="1" Padding="9">-->
 
-                                                    <AdornerDecorator>
-                                                        <ContentPresenter/>
-                                                    </AdornerDecorator>
+                                                <AdornerDecorator Grid.Row="1">
+                                                    <ContentPresenter/>
+                                                </AdornerDecorator>
 
                                                 <!--</Border>-->
 

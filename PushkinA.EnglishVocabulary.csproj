@@ -13,6 +13,8 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -42,9 +44,6 @@
     </Reference>
     <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.3.0.19032, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
-    </Reference>
-    <Reference Include="GoogleTranslateAPI, Version=0.3.1.107, Culture=neutral, PublicKeyToken=37a8e65b17fcdcbb, processorArchitecture=MSIL">
-      <HintPath>packages\Google.Translate.api.0.3.1\lib\net40\GoogleTranslateAPI.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
@@ -96,7 +95,11 @@
     </ApplicationDefinition>
     <Compile Include="Converters\TestModeToWidthConverter.cs" />
     <Compile Include="Infrastructure\DialogViewModelBase.cs" />
-    <Compile Include="Model\Question.cs" />
+    <Compile Include="Infrastructure\MessageBox\MessageBoxView.xaml.cs">
+      <DependentUpon>MessageBoxView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Infrastructure\MessageBox\MessageBoxViewModel.cs" />
+    <Compile Include="Model\VocabularyRecord.cs" />
     <Compile Include="Services\DataService.cs" />
     <Compile Include="Services\DialogService.cs" />
     <Compile Include="Infrastructure\InputBox\InputBoxViewModel.cs" />
@@ -105,7 +108,7 @@
     <Compile Include="Styles\CustomWindowChrome\CustomWindowChrome.cs" />
     <Compile Include="ViewModels\ParseTextViewModel.cs" />
     <Compile Include="ViewModels\VocabulariesViewModel.cs" />
-    <Compile Include="ViewModels\VocabularyItemViewModel.cs" />
+    <Compile Include="ViewModels\VocabularyItemDialogViewModel.cs" />
     <Compile Include="ViewModels\VocabularyListViewModel.cs" />
     <Compile Include="Infrastructure\InputBox\InputBoxView.xaml.cs">
       <DependentUpon>InputBoxView.xaml</DependentUpon>
@@ -116,14 +119,18 @@
     <Compile Include="Views\VocabulariesView.xaml.cs">
       <DependentUpon>VocabulariesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\VocabularyItemView.xaml.cs">
-      <DependentUpon>VocabularyItemView.xaml</DependentUpon>
+    <Compile Include="Views\VocabularyItemDialogView.xaml.cs">
+      <DependentUpon>VocabularyItemDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VocabularyListView.xaml.cs">
       <DependentUpon>VocabularyListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
+    <Page Include="Infrastructure\MessageBox\MessageBoxView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -184,7 +191,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\VocabularyItemView.xaml">
+    <Page Include="Views\VocabularyItemDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -220,6 +227,5 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

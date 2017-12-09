@@ -24,14 +24,14 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             CancelCommand = new RelayCommand(() => { dialog.Close(); });
         }
 
-        private string inputString;
-        public string InputString {
-            get { return inputString; }
+        private string stringValue;
+        public string StringValue {
+            get { return stringValue; }
             set {
-                if (value != inputString)
+                if (value != stringValue)
                 {
-                    inputString = value;
-                    RaisePropertyChanged(() => InputString);
+                    stringValue = value;
+                    RaisePropertyChanged(() => StringValue);
                 }
             }
         }
@@ -40,7 +40,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
         private void SaveCommandHandler()
         {
-            if (onSaveInput != null) onSaveInput(InputString);
+            if (onSaveInput != null) onSaveInput(StringValue);
             dialog.Close();
         }
 

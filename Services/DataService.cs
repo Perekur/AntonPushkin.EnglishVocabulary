@@ -60,5 +60,18 @@ namespace PushkinA.EnglishVocabulary.Services
             var files = Directory.GetFiles(dataFolderName, "*.xml", SearchOption.TopDirectoryOnly);
             return files.Select(file => Path.GetFileNameWithoutExtension(file)).ToArray();
         }
+
+        public void Rename(string oldFileName, string newFileName)
+        {
+            string oldFilePath = Path.Combine(dataFolderName, oldFileName, "*.xml");
+            string newFilePath = Path.Combine(dataFolderName, oldFileName, "*.xml");
+
+            if (!File.Exists(oldFilePath)) return;
+
+            if (File.Exists(newFilePath))
+                throw new Exception(String.Format("File '{0}' already exists", "newFileName"));
+
+            File.Move(oldFileName, newFileName);
+        }
     }
 }
