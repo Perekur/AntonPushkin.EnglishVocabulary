@@ -22,6 +22,7 @@ namespace PushkinA.EnglishVocabulary.Services
         ///
         public string Translate(string text, string fromCulture, string toCulture)
         {
+            if (string.IsNullOrEmpty(text)) return string.Empty;
             return TranslateText(text, string.Format("{0}|{1}", fromCulture, toCulture), System.Text.Encoding.Default);
         }
 
@@ -32,7 +33,7 @@ namespace PushkinA.EnglishVocabulary.Services
         /// e.g. "en|da" language pair means to translate from English to Danish
         /// The encoding.
         /// Translated to String
-        public string TranslateText(string input, string languagePair, Encoding encoding)
+        private string TranslateText(string input, string languagePair, Encoding encoding)
         {
             string url = String.Format("http://www.google.com/translate_t?hl=en&ie=UTF8&text={0}&langpair={1}", input, languagePair);
             string result = String.Empty;

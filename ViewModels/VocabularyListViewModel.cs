@@ -16,12 +16,11 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         private readonly IDataService<VocabularyRecord> dataService;
 
         private readonly IDialogService dialogService;
-
-        private ObservableCollection<VocabularyRecord> questionList;
-
+       
         private readonly ISpeachService speachService;
 
-        public ObservableCollection<VocabularyRecord> QuestionList
+        private ObservableCollection<VocabularyRecordViewModel> questionList;
+        public ObservableCollection<VocabularyRecordViewModel> QuestionList
         {
             get
             {
@@ -37,8 +36,8 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             }
         }
 
-        private VocabularyRecord question;
-        public VocabularyRecord Question
+        private VocabularyRecordViewModel question;
+        public VocabularyRecordViewModel Question
         {
             get { return question; }
             set
@@ -129,7 +128,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
             this.speachService = ViewModelLocator.Resolve<ISpeachService>();
 
-            QuestionList = new ObservableCollection<VocabularyRecord>();
+            QuestionList = new ObservableCollection<VocabularyRecordViewModel>();
 
             NextCommand = new RelayCommand(NextCommandHandler, () => { return QuestionList.Contains(Question) && QuestionList.IndexOf(Question) < QuestionList.Count - 1; });
             PrevCommand = new RelayCommand(PrevCommandHandler, () => { return QuestionList.Contains(Question) && QuestionList.IndexOf(Question) > 0; });
@@ -155,20 +154,21 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             foreach (var item in items)
             {
                 if (!QuestionList.Any(q => string.Compare(q.ForeignText, item.ForeignText, true) == 0))
-                    QuestionList.Add(item);
+                    QuestionList.Add(new VocabularyRecordViewModel(item));
             }
             SaveCommand.Execute(null);
         }
 
         private void RefreshCommandHandler()
         {
-            QuestionList = new ObservableCollection<VocabularyRecord>(dataService.Get(FileName));
+            var dataVM = dataService.Get(FileName).Select(i=>new VocabularyRecordViewModel(i)).ToList();
+            QuestionList = new ObservableCollection<VocabularyRecordViewModel>(dataVM);
             RaiseCanExecuteChanged();
         }
 
         private void SaveCommandHandler()
         {
-            dataService.Set(QuestionList.ToArray(), FileName);
+            dataService.Set(QuestionList.Select(i=>new VocabularyRecord(i)).ToArray(), FileName);
             RaiseCanExecuteChanged();
         }
 
@@ -176,7 +176,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         {
             var question = new VocabularyRecord() { ShowDateStart = DateTime.Now.Date, ShowDateEnd = DateTime.Now.Date.AddDays(3) };
             var vm = new VocabularyItemDialogViewModel(
-                (item) => { QuestionList.Add(item); SaveCommand.Execute(null); }
+                (item) => { QuestionList.Add(new VocabularyRecordViewModel(item)); SaveCommand.Execute(null); }
             );
             vm.Question = question;
             dialogService.ShowDialog(vm, "modalDialog");
@@ -211,9 +211,17 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
         private void DeleteCommandHandler()
         {
-            int index = QuestionList.IndexOf(Question);
-            if (index >= 0 && index < QuestionList.Count)
-                QuestionList.Remove(Question);
+            var selectedItems = QuestionList.Where(i => i.IsSelected).ToList();
+            if (selectedItems.Count == 0) return;
+
+            if (MessageBox.ShowDialog(string.Format("Do you confirm delete {0} records.", selectedItems.Count), "Delete", System.Windows.Forms.MessageBoxButtons.YesNo)==System.Windows.Forms.DialogResult.Yes)
+            {
+                foreach (var item in selectedItems)
+                {
+                    QuestionList.Remove(item);
+                }
+            }
+
             SaveCommand.Execute(null);
             RaiseCanExecuteChanged();
         }

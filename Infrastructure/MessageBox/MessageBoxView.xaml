@@ -24,54 +24,45 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        <TextBlock Text="{Binding Message}" Margin="6" Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Bottom"/>
 
-            <TextBlock Text="{Binding Description}" Grid.Row="1"/>
 
-        </Grid>
-
-        <StackPanel Grid.Row="3">
+        <StackPanel Grid.Row="2" Margin="3">
             <!-- OK -->
-            <Button Command="{Binding ClickCommand}" CommandParameter="{x:Static winforms:DialogResult.OK}">OK</Button>
-        
+            <Button Command="{Binding ClickCommand}" CommandParameter="{x:Static winforms:DialogResult.OK}" Visibility="{Binding IsOkVisible, Converter={StaticResource boolToVisibleConverter}}">OK</Button>
+
             <!-- OKCancel -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="30" Visibility="{Binding IsOkCancelVisible, Converter={StaticResource boolToVisibleConverter}}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding IsOkCancelVisible, Converter={StaticResource boolToVisibleConverter}}">
                 <Button Command="{Binding ClickCommand}" CommandParameter="{x:Static winforms:DialogResult.OK}"  Width="100" Margin="3">OK</Button>
                 <Button Command="{Binding ClickCommand}" CommandParameter="{x:Static winforms:DialogResult.Cancel}"  Width="100" Margin="3">CANCEL</Button>
             </StackPanel>
 
             <!-- YesNo -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="30" Visibility="{Binding IsYesNoVisible, Converter={StaticResource boolToVisibleConverter}}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding IsYesNoVisible, Converter={StaticResource boolToVisibleConverter}}">
                 <Button Command="{Binding ClickCommand}" CommandParameter="{x:Static winforms:DialogResult.Yes}"  Width="100" Margin="3">YES</Button>
                 <Button Command="{Binding ClickCommand}" CommandParameter="{x:Static winforms:DialogResult.No}"  Width="100" Margin="3">NO</Button>
             </StackPanel>
 
             <!-- YesNoCancel -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="30" Visibility="{Binding IsYesNoCancelVisible, Converter={StaticResource boolToVisibleConverter}}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding IsYesNoCancelVisible, Converter={StaticResource boolToVisibleConverter}}">
                 <Button Command="{Binding ClickCommand}" CommandParameter="{x:Static winforms:DialogResult.Yes}"  Width="100" Margin="3">YES</Button>
                 <Button Command="{Binding ClickCommand}" CommandParameter="{x:Static winforms:DialogResult.No}"  Width="100" Margin="3">NO</Button>
                 <Button Command="{Binding ClickCommand}" CommandParameter="{x:Static winforms:DialogResult.Cancel}"  Width="100" Margin="3">CANCEL</Button>
             </StackPanel>
 
             <!-- RetryCancel -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="30" Visibility="{Binding IsRetryCancelVisible, Converter={StaticResource boolToVisibleConverter}}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding IsRetryCancelVisible, Converter={StaticResource boolToVisibleConverter}}">
                 <Button Command="{Binding ClickCommand}" CommandParameter="{x:Static winforms:DialogResult.Retry}"  Width="100" Margin="3">RETRY</Button>
                 <Button Command="{Binding ClickCommand}" CommandParameter="{x:Static winforms:DialogResult.Cancel}"  Width="100" Margin="3">CANCEL</Button>
             </StackPanel>
 
             <!-- AbortRetryIgnore -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="30" Visibility="{Binding IsAbortRetryIgnoreVisible, Converter={StaticResource boolToVisibleConverter}}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding IsAbortRetryIgnoreVisible, Converter={StaticResource boolToVisibleConverter}}">
                 <Button Command="{Binding ClickCommand}" CommandParameter="{x:Static winforms:DialogResult.Abort}"  Width="100" Margin="3">ABORT</Button>
                 <Button Command="{Binding ClickCommand}" CommandParameter="{x:Static winforms:DialogResult.Retry}"  Width="100" Margin="3">RETRY</Button>
                 <Button Command="{Binding ClickCommand}" CommandParameter="{x:Static winforms:DialogResult.Ignore}"  Width="100" Margin="3">IGNORE</Button>

@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:PushkinA.EnglishVocabulary.Views"             
              xmlns:vm="clr-namespace:PushkinA.EnglishVocabulary.ViewModels"
              mc:Ignorable="d" d:DataContext="{d:DesignInstance Type={x:Type vm:VocabularyItemDialogViewModel}}"
-             d:DesignHeight="250" d:DesignWidth="400">
+             d:DesignHeight="250" d:DesignWidth="400" MaxWidth="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

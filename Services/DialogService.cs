@@ -19,39 +19,10 @@ namespace PushkinA.EnglishVocabulary.Services
     public interface IDialogService
     {
         void ShowDialog<T>(T ViewModel, string dialogStyle="") where T: class, IDialogViewModel;
-
-        DialogResult MessageBox(string message, string title = "", MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None);
-
-        string InputBox(string title, string stringValue = "", string description = "");
     }
 
     public class DialogService : IDialogService
     {
-        public string InputBox(string title, string stringValue="", string description = "")
-        {
-            var retVal = string.Empty;
-            var vm = new InputBoxViewModel((val) => retVal = val)
-            {
-                Description = description,
-                StringValue = stringValue
-            };
-            ShowDialog(vm, "modalDialog");
-            return retVal;
-        }
-
-        public DialogResult MessageBox(string message, string title = "", MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None)
-        {
-            var vm = new MessageBoxViewModel()
-            {
-                Message = message,
-                Title = title,
-                Buttons = buttons,
-                Icon = icon
-            };
-            ShowDialog(vm, "modalDialog");
-            return vm.Result;
-        }
-
         public void ShowDialog<T>(T ViewModel, string dialogStyle="") where T : class, IDialogViewModel
         {            
             var window = new Window();

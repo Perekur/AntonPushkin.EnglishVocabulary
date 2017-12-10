@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.Practices.ServiceLocation;
 using PushkinA.EnglishVocabulary.Infrastructure;
 using PushkinA.EnglishVocabulary.Model;
 using PushkinA.EnglishVocabulary.Services;
@@ -46,5 +47,27 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
         public RelayCommand SaveCommand { get; private set; }
         public RelayCommand CancelCommand { get; private set; }
+    }
+
+    public static class InputBox
+    {                        
+        public static string ShowDialog(string description, string defaultValue, string title)
+        {
+            return ShowDialog(Application.Current.MainWindow, description, defaultValue, title);
+        }
+
+        public static string ShowDialog(Window parent, string description, string defaultValue, string title)
+        {
+            var dialogService = ServiceLocator.Current.GetInstance<IDialogService>();
+
+            var retVal = string.Empty;
+            var vm = new InputBoxViewModel((val) => retVal = val)
+            {
+                Description = description,
+                StringValue = defaultValue
+            };
+            dialogService.ShowDialog(vm, "modalDialog");
+            return retVal;
+        }
     }
 }

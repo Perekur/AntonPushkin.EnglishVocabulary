@@ -110,11 +110,11 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             int weekOfYear = DateTimeFormatInfo.CurrentInfo.Calendar.GetWeekOfYear(DateTime.Now, System.Globalization.CalendarWeekRule.FirstDay, DayOfWeek.Monday);
             string defaultName = string.Format("Vocabulary{0}.{1:##}", DateTime.Now.Year, weekOfYear);
 
-            var strVocabularyName = dialogService.InputBox("Input value", defaultName, "Please, insert name of new Vocabulary");
+            var strVocabularyName = InputBox.ShowDialog(defaultName, "Please, insert name of new Vocabulary", "Input value");
             if (string.IsNullOrEmpty(strVocabularyName)) return;
 
             if (Vocabularies.Any(v => string.Compare(v.FileName, strVocabularyName, true) == 0))
-                dialogService.MessageBox(string.Format("Vocabulary '{0}' already exists.", strVocabularyName), "Warning");            
+                MessageBox.ShowDialog(string.Format("Vocabulary '{0}' already exists.", strVocabularyName), "Warning");            
             else
                 Vocabularies.Add(new VocabularyListViewModel(dataService, dialogService) { FileName = strVocabularyName });
 

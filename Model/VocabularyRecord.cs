@@ -74,5 +74,37 @@ namespace PushkinA.EnglishVocabulary.Model
             ShowDateStart = DateTime.Now;
             ShowDateEnd = DateTime.Now.Date.AddDays(7);
         }
+
+        public VocabularyRecord(VocabularyRecord item):base()
+        {
+            ForeignText = item.ForeignText;
+            NativeText = item.NativeText;
+            ShowDateStart = item.ShowDateStart;
+            ShowDateEnd = item.ShowDateEnd;
+        }
+    }
+
+    public class VocabularyRecordViewModel:VocabularyRecord
+    {
+        private bool isSelected = false;
+        public bool IsSelected
+        {
+            get { return isSelected; }
+            set
+            {
+                if (isSelected != value)
+                {
+                    isSelected = value;
+                    RaisePropertyChanged(() => IsSelected);
+                }
+            }
+        }
+
+        public VocabularyRecordViewModel(VocabularyRecord item) : base(item) { }
+
+        public VocabularyRecordViewModel(VocabularyRecordViewModel item) : base(item)
+        {
+            IsSelected = item.IsSelected;
+        }
     }
 }
