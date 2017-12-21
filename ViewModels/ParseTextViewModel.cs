@@ -53,13 +53,82 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             }
         }
 
+        private bool isSentenceParse;
+        public bool IsSentenceParse
+        {
+            get { return isSentenceParse; }
+            set
+            {
+                if (value != isSentenceParse)
+                {
+                    isSentenceParse = value;
+                    RaisePropertyChanged(() => IsSentenceParse);
+                }
+            }
+        }
+
         private void ParseFileCommandHandler()
         {
             cts = new CancellationTokenSource();
-            Task.Run(new Action(ParseTextFile), cts.Token);
+            if (isSentenceParse)
+                Task.Run(new Action(ParseTextFileBySentences), cts.Token);
+            else
+                Task.Run(new Action(ParseTextFileByWords), cts.Token);
         }
 
-        private void ParseTextFile()
+        private void ParseTextFileBySentences()
+        {
+            CanChangeFileName = false;
+            try
+            {
+                var vocabulary = new List<VocabularyRecord>();
+
+                string dialogNum = "";
+                string sentence = "";
+                string txtOffset = "";
+
+                using (var sr = new StreamReader(FileName))
+                {
+                    while (!sr.EndOfStream && !cts.IsCancellationRequested)
+                    {
+                        var txtLine = sr.ReadLine();
+
+                        if (IsTimeOffset(txtLine) || string.IsNullOrEmpty(txtLine))
+                        {
+                            if (!string.IsNullOrEmpty(sentence))
+                            {
+                                sentence = sentence.Replace("<i>", "");
+                                sentence = sentence.Replace("</i>", "");
+                                vocabulary.Add(new VocabularyRecord() { ForeignText = sentence, NativeText = txtOffset });
+                            }
+
+                            txtOffset = txtLine;
+                            sentence = "";                            
+                        }
+                        else
+                            sentence += (string.IsNullOrEmpty(sentence) ? "" : " ") + txtLine;
+                    }
+
+                    if (!string.IsNullOrEmpty(sentence))
+                    {
+                        sentence = sentence.Replace("<i>", "");
+                        sentence = sentence.Replace("</i>", "");
+                        vocabulary.Add(new VocabularyRecord() { ForeignText = sentence, NativeText = txtOffset });
+                    }
+
+                    dialog.Dispatcher.BeginInvoke(new Action(() => {
+                        onSaveParsedQuestions(vocabulary.ToArray());
+                        Close();
+                    }));
+                }
+            }
+            finally
+            {
+                CanChangeFileName = true;
+            }
+        }
+
+        private void ParseTextFileByWords()
         {
             CanChangeFileName = false;
             try
@@ -102,6 +171,12 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         {
             if (string.IsNullOrEmpty(word)) return false;
             return Char.IsLetter(word[0]) && Char.IsLetter(word[word.Length - 1]);
+        }
+
+        private bool IsTimeOffset(string line)
+        {
+            if (string.IsNullOrEmpty(line)) return false;
+            return line.Contains("-->");
         }
 
         private void BrowseFileCommandHandler()

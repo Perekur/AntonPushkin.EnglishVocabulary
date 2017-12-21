@@ -110,7 +110,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             int weekOfYear = DateTimeFormatInfo.CurrentInfo.Calendar.GetWeekOfYear(DateTime.Now, System.Globalization.CalendarWeekRule.FirstDay, DayOfWeek.Monday);
             string defaultName = string.Format("Vocabulary{0}.{1:##}", DateTime.Now.Year, weekOfYear);
 
-            var strVocabularyName = InputBox.ShowDialog(defaultName, "Please, insert name of new Vocabulary", "Input value");
+            var strVocabularyName = InputBox.ShowDialog("Please, insert name of new Vocabulary", defaultName);
             if (string.IsNullOrEmpty(strVocabularyName)) return;
 
             if (Vocabularies.Any(v => string.Compare(v.FileName, strVocabularyName, true) == 0))

@@ -14,33 +14,37 @@
         <Style TargetType="{x:Type TextBlock}">
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
-    </UserControl.Resources>    
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="FileName"/>
+            <TextBlock Text="FileName" Padding="6"/>
 
-            <TextBox Text="{Binding FileName}" Grid.Column="1" MinWidth="400" IsEnabled="{Binding CanChangeFileName, Mode=OneWay}"/>
+            <TextBox Text="{Binding FileName}" MinWidth="400" IsEnabled="{Binding CanChangeFileName, Mode=OneWay}" Grid.Row="1"/>
 
-            <StackPanel Orientation="Horizontal" Grid.Column="2" Height="30">
-                <Button Command="{Binding BrowseFileCommand}"  Width="30" Margin="3">...</Button>
-            </StackPanel>
+            <Button Command="{Binding BrowseFileCommand}"  Width="30" Margin="3" Grid.Column="1" Grid.Row="1">...</Button>
+
+            <CheckBox Grid.Row="2" IsChecked="{Binding IsSentenceParse}" Margin="6">Parse by sentence</CheckBox>
         </Grid>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Right" Height="30">
+        <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Right" Height="30">
             <Button Content="Parse (Save)" Command="{Binding ParseFileCommand}" Width="100" Margin="3"/>
             <Button Content="Cancel" Command="{Binding CancelCommand}" Width="100" Margin="3"/>
         </StackPanel>
