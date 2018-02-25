@@ -53,7 +53,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             }
         }
 
-        private bool isSentenceParse;
+        private bool isSentenceParse=true;
         public bool IsSentenceParse
         {
             get { return isSentenceParse; }

@@ -14,20 +14,18 @@ namespace PushkinA.EnglishVocabulary.Services
 
         void Set<T>(T[] questions, string fileName = "");
 
-        string[] GetFiles();
-
-        void Rename(string oldFileName, string newFileName);
+        string[] GetFiles();        
     }
 
     public class DataService : IDataService
     {
-        private readonly string dataFolderName = Path.Combine(Environment.CurrentDirectory, "DATA");
+        private static readonly string dataFolderName = Path.Combine(Environment.CurrentDirectory, "DATA");
 
         public void Set<T>(T[] entities, string fileName = "")
         {
             if (!Directory.Exists(dataFolderName)) Directory.CreateDirectory(dataFolderName);
 
-            var xmlFileName = Path.Combine(dataFolderName, Path.ChangeExtension(fileName == string.Empty ? typeof(T).Name : fileName, ".xml"));
+            var xmlFileName = Path.Combine(dataFolderName, fileName == string.Empty ? typeof(T).Name : fileName) +  ".xml";
 
             using (var writer = new XmlTextWriter(xmlFileName, Encoding.Unicode) { Formatting = Formatting.Indented })
             {
@@ -40,12 +38,12 @@ namespace PushkinA.EnglishVocabulary.Services
         {
             if (!Directory.Exists(dataFolderName)) Directory.CreateDirectory(dataFolderName);
 
-            var xmlFileName = Path.Combine(dataFolderName, Path.ChangeExtension(fileName == string.Empty ? typeof(T).Name : fileName, ".xml"));
+            var xmlFileName = Path.Combine(dataFolderName, fileName == string.Empty ? typeof(T).Name : fileName) + ".xml";
             if (!File.Exists(xmlFileName)) return new T[0];
 
             var xmlUri = new Uri(xmlFileName);
 
-            using (var reader = new XmlTextReader(xmlUri.AbsolutePath))
+            using (var reader = new XmlTextReader(xmlUri.LocalPath))
             {
                 var serializer = new XmlSerializer(typeof(T[]));
                 try
@@ -67,17 +65,24 @@ namespace PushkinA.EnglishVocabulary.Services
             return files.Select(file => Path.GetFileNameWithoutExtension(file)).ToArray();
         }
 
-        public void Rename(string oldFileName, string newFileName)
+        public static void Rename(string oldFileName, string newFileName)
         {
-            string oldFilePath = Path.Combine(dataFolderName, oldFileName, "*.xml");
-            string newFilePath = Path.Combine(dataFolderName, oldFileName, "*.xml");
+            string oldFilePath = Path.Combine(dataFolderName, oldFileName) + ".xml";
+            string newFilePath = Path.Combine(dataFolderName, newFileName) + ".xml";
 
             if (!File.Exists(oldFilePath)) return;
 
             if (File.Exists(newFilePath))
-                throw new Exception(String.Format("File '{0}' already exists", "newFileName"));
+                throw new Exception(String.Format("File '{0}' already exists", newFileName));
 
-            File.Move(oldFileName, newFileName);
+            File.Move(oldFilePath, newFilePath);
         }
+
+        public static void Delete(string fileName)
+        {
+            var fullName = Path.Combine(dataFolderName, fileName) + ".xml";            
+            File.Delete(fullName);
+        }
+
     }
 }

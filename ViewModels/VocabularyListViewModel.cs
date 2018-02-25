@@ -118,9 +118,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         private void RaiseCanExecuteChanged()
         {
             RaisePropertyChanged();
-
-            NextCommand.RaiseCanExecuteChanged();
-            PrevCommand.RaiseCanExecuteChanged();
+            
             AddCommand.RaiseCanExecuteChanged();
             EditCommand.RaiseCanExecuteChanged();
             SaveCommand.RaiseCanExecuteChanged();
@@ -140,8 +138,6 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
             QuestionList = new ObservableCollection<VocabularyRecordViewModel>();
 
-            NextCommand = new RelayCommand(NextCommandHandler, () => { return QuestionList.Contains(VocabularyItem) && QuestionList.IndexOf(VocabularyItem) < QuestionList.Count - 1; });
-            PrevCommand = new RelayCommand(PrevCommandHandler, () => { return QuestionList.Contains(VocabularyItem) && QuestionList.IndexOf(VocabularyItem) > 0; });
             AddCommand = new RelayCommand(AddCommandHandler);            
             EditCommand = new RelayCommand(EditCommandHandler, () => VocabularyItem != null);
             SaveCommand = new RelayCommand(SaveCommandHandler);
@@ -169,6 +165,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             var vm = new ParseTextViewModel(SaveParsedWords);
             dialogService.ShowDialog(vm, "modalDialog");
             ParseFileCommand.RaiseCanExecuteChanged();
+            SaveCommandHandler();
         }
 
         private void SaveParsedWords(VocabularyRecord[] items)
@@ -245,8 +242,6 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             RaiseCanExecuteChanged();
         }
 
-        public RelayCommand NextCommand      { get; private set; }
-        public RelayCommand PrevCommand      { get; private set; }
         public RelayCommand AddCommand       { get; private set; }        
         public RelayCommand EditCommand      { get; private set; }
         public RelayCommand SaveCommand      { get; private set; }

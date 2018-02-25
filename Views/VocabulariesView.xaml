@@ -5,17 +5,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vw="clr-namespace:PushkinA.EnglishVocabulary.Views"
              xmlns:vm ="clr-namespace:PushkinA.EnglishVocabulary.ViewModels"
+             xmlns:attachedProperties="clr-namespace:PushkinA.EnglishVocabulary.AttachedProperties"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300" attachedProperties:AttachedCommandToEvent.LoadedCommand="{Binding RefreshCommand}">
     <UserControl.Resources>
         <DataTemplate DataType="{x:Type vm:VocabularyListViewModel}">
             <vw:VocabularyListView/>
         </DataTemplate>
         <ContextMenu x:Key="contextMenu">
-            <MenuItem Command="{Binding AddVocabularyCommand}" Header="Create new" Style="{x:Null}"/>
-            <MenuItem Command="{Binding RenameVocabularyCommand}" Header="Rename" Style="{x:Null}"/>
+            <MenuItem Header="Create new" Command="{Binding AddVocabularyCommand}" Style="{x:Null}"/>
+            <MenuItem Header="Rename" Command="{Binding RenameVocabularyCommand}" Style="{x:Null}"/>
         </ContextMenu>
 
+        <ContextMenu x:Key="contextMenuOfItem">
+            <MenuItem Header="Create new" Command="{Binding DataContext.AddVocabularyCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}, Mode=FindAncestor}}" Style="{x:Null}"/>
+            <MenuItem Header="Rename" Command="{Binding DataContext.RenameVocabularyCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}, Mode=FindAncestor}}" Style="{x:Null}"/>
+            <MenuItem Header="Remove" Command="{Binding DataContext.RemoveVocabularyCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}, Mode=FindAncestor}}" CommandParameter="{Binding}" Style="{x:Null}" />
+        </ContextMenu>
+
+
+        <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+            <Setter Property="ContextMenu" Value="{StaticResource contextMenuOfItem}"/>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>

@@ -28,12 +28,8 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
         public MainViewModel(IDataService dataService, IDialogService dialogService)
         {
-            var files = dataService.GetFiles();
-            var vocabularies = files.Select(file => new VocabularyListViewModel(dataService, dialogService) { FileName = file }).ToArray();
-
-            var vm = new VocabulariesViewModel(dataService, dialogService);
-            vm.Vocabularies = new ObservableCollection<VocabularyListViewModel>(vocabularies);
-            ViewModel = vm;
+            var vm = new VocabulariesViewModel(dataService, dialogService);            
+            ViewModel = vm;            
         }
     }
 }

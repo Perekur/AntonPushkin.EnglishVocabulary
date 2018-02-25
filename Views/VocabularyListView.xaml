@@ -4,35 +4,62 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vm="clr-namespace:PushkinA.EnglishVocabulary.ViewModels"
-             xmlns:cnv="clr-namespace:PushkinA.EnglishVocabulary.Converters"
+             xmlns:cnv="clr-namespace:PushkinA.EnglishVocabulary.Converters"             
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <ContextMenu x:Key="contextMenu" >
-            <MenuItem Command="{Binding AddCommand}" Header="Add" Style="{x:Null}"/>
-            <MenuItem Command="{Binding EditCommand}" Header="Edit" Style="{x:Null}"/>
-            <MenuItem Command="{Binding DelCommand}" Header="Delete" Style="{x:Null}"/>
-            <MenuItem Command="{Binding SaveCommand}" Header="Save" Style="{x:Null}"/>
-            <MenuItem Command="{Binding ParseFileCommand}" Header="Parse txt file" Style="{x:Null}"/>
-            <MenuItem Command="{Binding TranslateSelectedCommand}" Header="Translate" Style="{x:Null}"/>
-        </ContextMenu>
-
         <cnv:TestModeToWidthConverter x:Key="testModeToWidthConverter"/>
 
+        <ContextMenu x:Key="contextMenu">
+            <MenuItem Header="Add" Command="{Binding AddCommand}" Style="{x:Null}"/>
+            <MenuItem Header="Refresh" Command="{Binding RefreshCommand}" Style="{x:Null}"/>
+            <MenuItem Header="Save" Command="{Binding SaveCommand}" Style="{x:Null}"/>
+            <Separator/>
+            <MenuItem Header="ParseFileCommand" Command="{Binding ParseFileCommand}" Style="{x:Null}"/>
+        </ContextMenu>
+
+        <ContextMenu x:Key="contextMenuOfItem" Style="{x:Null}">
+            <MenuItem Header="Add" Command="{Binding Path=DataContext.AddCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}, Mode=FindAncestor}}" Style="{x:Null}"/>
+            <MenuItem Header="Edit" Command="{Binding Path=DataContext.EditCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}, Mode=FindAncestor}}" CommandParameter="{Binding}" Style="{x:Null}"/>
+            <MenuItem Header="Delete" Command="{Binding Path=DataContext.DelCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}, Mode=FindAncestor}}" Style="{x:Null}"/>
+            <MenuItem Header="Refresh" Command="{Binding Path=DataContext.RefreshCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}, Mode=FindAncestor}}" Style="{x:Null}"/>
+            <MenuItem Header="Save" Command="{Binding Path=DataContext.SaveCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}, Mode=FindAncestor}}" Style="{x:Null}"/>
+            <Separator/>
+            <MenuItem Header="ParseFileCommand" Command="{Binding Path=DataContext.ParseFileCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}, Mode=FindAncestor}}" Style="{x:Null}"/>
+            <MenuItem Header="TranslateSelectedCommand" Command="{Binding Path=DataContext.TranslateSelectedCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}, Mode=FindAncestor}}" Style="{x:Null}"/>
+        </ContextMenu>
+
         <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
-            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <Setter Property="ContentTemplate">
+            <Setter Property="ContextMenu" Value="{StaticResource contextMenuOfItem}"/>
+            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWayToSource}" />
+            <Setter Property="Template">
                 <Setter.Value>
-                    <DataTemplate>
-                        <ContentPresenter Content="{Binding}">
-                            <ContentPresenter.InputBindings>
-                                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding Path=DataContext.EditCommand, ElementName=listView}"/>
-                            </ContentPresenter.InputBindings>
-                        </ContentPresenter>
-                    </DataTemplate>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border x:Name="rowBorder" Background="{TemplateBinding Background}">
+                            <Border.InputBindings>
+                                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DataContext.EditCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}, Mode=FindAncestor}}" CommandParameter="{Binding}"/>
+                            </Border.InputBindings>
+                            <GridViewRowPresenter x:Name="rowPresenter" MinHeight="20"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="true" />
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.Setters>
+                                    <Setter TargetName="rowBorder" Property="Background" Value="LightBlue" />
+                                </MultiTrigger.Setters>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style x:Key="headerContainerStyle" TargetType="{x:Type GridViewColumnHeader}" BasedOn="{StaticResource {x:Type GridViewColumnHeader}}">
+            <Setter Property="Height" Value="30"/>
+        </Style>
+
     </UserControl.Resources>
 
     <Grid>

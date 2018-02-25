@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace PushkinA.EnglishVocabulary.ViewModels
 {
@@ -24,8 +25,8 @@ namespace PushkinA.EnglishVocabulary.ViewModels
                 {
                     vocabularies = value;
                     RaisePropertyChanged(() => Vocabularies);
-                    if (vocabularies.Count>0)
-                    SelectedVocabularyList = vocabularies[0];
+                    if (vocabularies.Count > 0)
+                        SelectedVocabularyList = vocabularies[0];
                 }
             }
         }
@@ -40,19 +41,21 @@ namespace PushkinA.EnglishVocabulary.ViewModels
                 {
                     selectedVocabularyList = value;
                     RaisePropertyChanged(() => SelectedVocabularyList);
-                    selectedVocabularyList.RefreshCommand.Execute(null);
+                    if (selectedVocabularyList!=null)
+                        selectedVocabularyList.RefreshCommand.Execute(null);
                 }
             }
         }
-        
-        private bool isForeignTextVisible=true;
+
+        private bool isForeignTextVisible = true;
         public bool IsForeignTextVisible
         {
             get { return isForeignTextVisible; }
-            set {
+            set
+            {
                 isForeignTextVisible = value;
 
-                foreach(var v in vocabularies)
+                foreach (var v in vocabularies)
                 {
                     v.IsForeignTextVisible = value;
                 }
@@ -61,7 +64,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             }
         }
 
-        private bool isTranslationVisible=true;
+        private bool isTranslationVisible = true;
         public bool IsTranslationVisible
         {
             get { return isTranslationVisible; }
@@ -83,8 +86,9 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         public bool IsSpeachWord
         {
             get { return isSpeachWord; }
-            set {
-                isSpeachWord = value;                
+            set
+            {
+                isSpeachWord = value;
                 foreach (var v in vocabularies)
                 {
                     v.IsSpeachWord = value;
@@ -95,25 +99,63 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
 
         private readonly IDialogService dialogService;
-        private readonly IDataService dataService;        
+        private readonly IDataService dataService;
 
         public VocabulariesViewModel(IDataService dataService, IDialogService dialogService)
         {
             this.dialogService = dialogService;
             this.dataService = dataService;
+            this.Vocabularies = new ObservableCollection<VocabularyListViewModel>();
 
             AddVocabularyCommand = new RelayCommand(AddVocabularyCommandHandler);
             RenameVocabularyCommand = new RelayCommand(RenameVocabularyCommandHandler);
+            RemoveVocabularyCommand = new RelayCommand<VocabularyListViewModel>(RemoveVocabularyCommandHandler);
+            RefreshCommand = new RelayCommand(Refresh);
+        }
+
+        private void Refresh()
+        {
+            var files = dataService.GetFiles();
+            Vocabularies.Clear();
+            foreach (var file in files)
+            {
+                Vocabularies.Add(new VocabularyListViewModel(dataService, dialogService) { FileName = file });
+            };            
+        }
+
+        private void RemoveVocabularyCommandHandler(VocabularyListViewModel vocabulary)
+        {
+            if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+            {
+                MessageBox.ShowDialog("Need use modifiers");
+                return;
+            }
+
+            if (vocabulary != null)
+            {
+                if (MessageBox.ShowDialog("Are you sure want delete vocabulary?","Delete", System.Windows.Forms.MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    try
+                    {
+                        DataService.Delete(vocabulary.FileName);
+                        Refresh();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.ShowDialog(ex.Message, ex.GetType().Name, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                    }
+                }
+            }
         }
 
         private void RenameVocabularyCommandHandler()
-        {            
+        {
             var newName = InputBox.ShowDialog("New name of vocabulary:", SelectedVocabularyList.FileName, "Rename");
             if (string.IsNullOrEmpty(newName)) return;
 
             try
             {
-                dataService.Rename(SelectedVocabularyList.FileName, newName);
+                DataService.Rename(SelectedVocabularyList.FileName, newName);
                 SelectedVocabularyList.FileName = newName;
             }
             catch (Exception ex)
@@ -125,13 +167,13 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         private void AddVocabularyCommandHandler()
         {
             int weekOfYear = DateTimeFormatInfo.CurrentInfo.Calendar.GetWeekOfYear(DateTime.Now, System.Globalization.CalendarWeekRule.FirstDay, DayOfWeek.Monday);
-            string defaultName =  string.Format("{0:MMdd}.Vocabulary{0:yyyy}.{1:0#}", DateTime.Now, weekOfYear);
+            string defaultName = string.Format("{0:MMdd}.Vocabulary{0:yyyy}.{1:0#}", DateTime.Now, weekOfYear);
 
             var strVocabularyName = InputBox.ShowDialog("Please, insert name of new Vocabulary", defaultName);
             if (string.IsNullOrEmpty(strVocabularyName)) return;
 
             if (Vocabularies.Any(v => string.Compare(v.FileName, strVocabularyName, true) == 0))
-                MessageBox.ShowDialog(string.Format("Vocabulary '{0}' already exists.", strVocabularyName), "Warning");            
+                MessageBox.ShowDialog(string.Format("Vocabulary '{0}' already exists.", strVocabularyName), "Warning");
             else
                 Vocabularies.Add(new VocabularyListViewModel(dataService, dialogService) { FileName = strVocabularyName });
 
@@ -150,5 +192,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
         public RelayCommand AddVocabularyCommand { get; private set; }
         public RelayCommand RenameVocabularyCommand { get; private set; }
+        public RelayCommand<VocabularyListViewModel> RemoveVocabularyCommand { get; private set; }
+        public RelayCommand RefreshCommand { get; private set; }
     }
 }

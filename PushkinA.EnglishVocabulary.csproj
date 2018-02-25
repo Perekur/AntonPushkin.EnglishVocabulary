@@ -93,6 +93,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AttachedProperties\AttachedCommandToEvent.cs" />
+    <Compile Include="AttachedProperties\AttachedWindowProps.cs" />
     <Compile Include="Converters\TestModeToWidthConverter.cs" />
     <Compile Include="Infrastructure\DialogViewModelBase.cs" />
     <Compile Include="Infrastructure\MessageBox\MessageBoxView.xaml.cs">
