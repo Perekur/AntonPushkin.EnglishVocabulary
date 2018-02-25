@@ -8,32 +8,38 @@ using System.Linq;
 
 namespace PushkinA.EnglishVocabulary.Services
 {
-    public interface IDataService<T>
+    public interface IDataService
     {
-        T[] Get(string fileName="");
+        T[] Get<T>(string fileName = "");
 
-        void Set(T[] questions, string fileName="");
+        void Set<T>(T[] questions, string fileName = "");
 
-        string[] GetFiles();        
+        string[] GetFiles();
+
+        void Rename(string oldFileName, string newFileName);
     }
 
-    public class DataService<T> : IDataService<T> where T:new()
+    public class DataService : IDataService
     {
-        private readonly string dataFolderName = Path.Combine(Environment.CurrentDirectory,"DATA");
+        private readonly string dataFolderName = Path.Combine(Environment.CurrentDirectory, "DATA");
 
-        public void Set(T[] entities, string fileName = "")
+        public void Set<T>(T[] entities, string fileName = "")
         {
-            var xmlFileName = Path.Combine(dataFolderName, Path.ChangeExtension(fileName == string.Empty ? typeof(T).Name : fileName,".xml"));
+            if (!Directory.Exists(dataFolderName)) Directory.CreateDirectory(dataFolderName);
 
-            using (var writer = new XmlTextWriter(xmlFileName, Encoding.Unicode) { Formatting=Formatting.Indented})
+            var xmlFileName = Path.Combine(dataFolderName, Path.ChangeExtension(fileName == string.Empty ? typeof(T).Name : fileName, ".xml"));
+
+            using (var writer = new XmlTextWriter(xmlFileName, Encoding.Unicode) { Formatting = Formatting.Indented })
             {
-                var serializer = new XmlSerializer(typeof(T[]), string.Empty);                
+                var serializer = new XmlSerializer(typeof(T[]), string.Empty);
                 serializer.Serialize(writer, entities);
             }
         }
 
-        public T[] Get(string fileName = "")
+        public T[] Get<T>(string fileName = "")
         {
+            if (!Directory.Exists(dataFolderName)) Directory.CreateDirectory(dataFolderName);
+
             var xmlFileName = Path.Combine(dataFolderName, Path.ChangeExtension(fileName == string.Empty ? typeof(T).Name : fileName, ".xml"));
             if (!File.Exists(xmlFileName)) return new T[0];
 
@@ -54,7 +60,7 @@ namespace PushkinA.EnglishVocabulary.Services
         }
 
         public string[] GetFiles()
-        {            
+        {
             if (!Directory.Exists(dataFolderName)) return new string[0];
 
             var files = Directory.GetFiles(dataFolderName, "*.xml", SearchOption.TopDirectoryOnly);

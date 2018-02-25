@@ -15,8 +15,6 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
-using PushkinA.EnglishVocabulary.Model;
-using PushkinA.EnglishVocabulary.Services;
 
 namespace PushkinA.EnglishVocabulary.ViewModels
 {
@@ -36,10 +34,11 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             if (!ViewModelBase.IsInDesignModeStatic)
             {
                 // Create run time view services and models
-                SimpleIoc.Default.Register<IDataService<VocabularyRecord>>(() => new DataService<VocabularyRecord>());
-                SimpleIoc.Default.Register<IDialogService, DialogService>();
-                SimpleIoc.Default.Register<ITranslationService, TranslationService>();
-                SimpleIoc.Default.Register<ISpeachService, SpeachService>();
+                SimpleIoc.Default.Register<Services.IDataService, Services.DataService>();
+                SimpleIoc.Default.Register<Services.IDialogService, Services.DialogService>();
+                SimpleIoc.Default.Register<Services.IDialogService, Services.DialogService>();
+                SimpleIoc.Default.Register<Services.ITranslationService, Services.TranslationService>();
+                SimpleIoc.Default.Register<Services.ISpeachService, Services.SpeachService>();
             }
 
             SimpleIoc.Default.Register<MainViewModel>();

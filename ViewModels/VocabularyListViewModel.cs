@@ -13,7 +13,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 {
     public class VocabularyListViewModel : ViewModelBase
     {
-        private readonly IDataService<VocabularyRecord> dataService;
+        private readonly IDataService dataService;
 
         private readonly IDialogService dialogService;
        
@@ -36,20 +36,29 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             }
         }
 
-        private VocabularyRecordViewModel question;
-        public VocabularyRecordViewModel Question
+
+        public IEnumerable<VocabularyRecordViewModel> SelectedItems
         {
-            get { return question; }
+            get
+            {
+                return QuestionList.Where(i => i.IsSelected);
+            }
+        }
+
+        private VocabularyRecordViewModel vocabularyItem;
+        public VocabularyRecordViewModel VocabularyItem
+        {
+            get { return vocabularyItem; }
             set
             {
-                if (question != value)
+                if (vocabularyItem != value)
                 {
-                    question = value;
-                    RaisePropertyChanged(() => Question);
+                    vocabularyItem = value;
+                    RaisePropertyChanged(() => VocabularyItem);
                     RaiseCanExecuteChanged();
 
-                    if (IsSpeachWord && speachService != null && question!=null)
-                        speachService.SpeachAsync(question.ForeignText);
+                    if (IsSpeachWord && speachService != null && vocabularyItem!=null)
+                        speachService.SpeachAsync(vocabularyItem.ForeignText);
                 }
             }
         }
@@ -116,12 +125,13 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             EditCommand.RaiseCanExecuteChanged();
             SaveCommand.RaiseCanExecuteChanged();
             DelCommand.RaiseCanExecuteChanged();
+            TranslateSelectedCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public VocabularyListViewModel(IDataService<VocabularyRecord> dataService, IDialogService dialogService)
+        public VocabularyListViewModel(IDataService dataService, IDialogService dialogService)
         {
             this.dataService = dataService;
             this.dialogService = dialogService;
@@ -130,16 +140,28 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
             QuestionList = new ObservableCollection<VocabularyRecordViewModel>();
 
-            NextCommand = new RelayCommand(NextCommandHandler, () => { return QuestionList.Contains(Question) && QuestionList.IndexOf(Question) < QuestionList.Count - 1; });
-            PrevCommand = new RelayCommand(PrevCommandHandler, () => { return QuestionList.Contains(Question) && QuestionList.IndexOf(Question) > 0; });
+            NextCommand = new RelayCommand(NextCommandHandler, () => { return QuestionList.Contains(VocabularyItem) && QuestionList.IndexOf(VocabularyItem) < QuestionList.Count - 1; });
+            PrevCommand = new RelayCommand(PrevCommandHandler, () => { return QuestionList.Contains(VocabularyItem) && QuestionList.IndexOf(VocabularyItem) > 0; });
             AddCommand = new RelayCommand(AddCommandHandler);            
-            EditCommand = new RelayCommand(EditCommandHandler, () => Question != null);
+            EditCommand = new RelayCommand(EditCommandHandler, () => VocabularyItem != null);
             SaveCommand = new RelayCommand(SaveCommandHandler);
             RefreshCommand = new RelayCommand(RefreshCommandHandler);
-            DelCommand = new RelayCommand(DeleteCommandHandler, () => Question != null);
+            DelCommand = new RelayCommand(DeleteCommandHandler, () => VocabularyItem != null);
             ParseFileCommand = new RelayCommand(ParseFileCommandHandler, () => QuestionList.Count==0);
+            TranslateSelectedCommand = new RelayCommand(TranslateSelectedCommandHandler);
 
             RaiseCanExecuteChanged();
+        }
+
+        private void TranslateSelectedCommandHandler()
+        {
+            var translationService = ViewModelLocator.Resolve<ITranslationService>();
+
+            foreach (var item in SelectedItems)
+            {
+                if (!string.IsNullOrEmpty(item.ForeignText))
+                item.NativeText = translationService.Translate(item.ForeignText, "en", "uk");
+            }
         }
 
         private void ParseFileCommandHandler()
@@ -161,7 +183,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
         private void RefreshCommandHandler()
         {
-            var dataVM = dataService.Get(FileName).Select(i=>new VocabularyRecordViewModel(i)).ToList();
+            var dataVM = dataService.Get<VocabularyRecord>(FileName).Select(i=>new VocabularyRecordViewModel(i)).ToList();
             QuestionList = new ObservableCollection<VocabularyRecordViewModel>(dataVM);
             RaiseCanExecuteChanged();
         }
@@ -188,35 +210,32 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             var vm = new VocabularyItemDialogViewModel(
                 (item) => { SaveCommand.Execute(null); }
             );
-            vm.Question = Question;
+            vm.Question = VocabularyItem;
             dialogService.ShowDialog(vm, "modalDialog");
             RaiseCanExecuteChanged();
         }
 
         private void PrevCommandHandler()
         {
-            int index = QuestionList.IndexOf(Question);
+            int index = QuestionList.IndexOf(VocabularyItem);
             if (index > 0) index--;
-            Question = QuestionList[index];
+            VocabularyItem = QuestionList[index];
             RaiseCanExecuteChanged();
         }
 
         private void NextCommandHandler()
         {
-            int index = QuestionList.IndexOf(Question);
+            int index = QuestionList.IndexOf(VocabularyItem);
             if (index < QuestionList.Count - 1) index++;
-            Question = QuestionList[index];
+            VocabularyItem = QuestionList[index];
             RaiseCanExecuteChanged();
         }
 
         private void DeleteCommandHandler()
         {
-            var selectedItems = QuestionList.Where(i => i.IsSelected).ToList();
-            if (selectedItems.Count == 0) return;
-
-            if (MessageBox.ShowDialog(string.Format("Do you confirm delete {0} records.", selectedItems.Count), "Delete", System.Windows.Forms.MessageBoxButtons.YesNo)==System.Windows.Forms.DialogResult.Yes)
+            if (MessageBox.ShowDialog(string.Format("Do you confirm delete {0} records.", SelectedItems.Count()), "Delete", System.Windows.Forms.MessageBoxButtons.YesNo)==System.Windows.Forms.DialogResult.Yes)
             {
-                foreach (var item in selectedItems)
+                foreach (var item in SelectedItems.ToList())
                 {
                     QuestionList.Remove(item);
                 }
@@ -234,5 +253,6 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         public RelayCommand DelCommand       { get; private set; }
         public RelayCommand RefreshCommand   { get; private set; }
         public RelayCommand ParseFileCommand { get; private set; }
+        public RelayCommand TranslateSelectedCommand { get; private set; }
     }
 }

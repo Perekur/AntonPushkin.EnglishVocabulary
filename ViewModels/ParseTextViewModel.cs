@@ -83,30 +83,53 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             {
                 var vocabulary = new List<VocabularyRecord>();
 
+                
                 string dialogNum = "";
                 string sentence = "";
                 string txtOffset = "";
 
+                SubtitleRowType rowType = SubtitleRowType.EmptyString;
+                
                 using (var sr = new StreamReader(FileName))
                 {
                     while (!sr.EndOfStream && !cts.IsCancellationRequested)
                     {
                         var txtLine = sr.ReadLine();
 
-                        if (IsTimeOffset(txtLine) || string.IsNullOrEmpty(txtLine))
+                        rowType = rowType == SubtitleRowType.Text ? rowType = SubtitleRowType.EmptyString : (SubtitleRowType)((int)rowType + 1);
+                        
+                        switch (rowType)
                         {
-                            if (!string.IsNullOrEmpty(sentence))
-                            {
-                                sentence = sentence.Replace("<i>", "");
-                                sentence = sentence.Replace("</i>", "");
-                                vocabulary.Add(new VocabularyRecord() { ForeignText = sentence, NativeText = txtOffset });
-                            }
-
-                            txtOffset = txtLine;
-                            sentence = "";                            
-                        }
-                        else
-                            sentence += (string.IsNullOrEmpty(sentence) ? "" : " ") + txtLine;
+                            case SubtitleRowType.EmptyString:
+                                if (string.IsNullOrEmpty(txtLine))
+                                {
+                                    sentence = sentence.Replace("<i>", "");
+                                    sentence = sentence.Replace("</i>", "");
+                                    vocabulary.Add(new VocabularyRecord()
+                                    {
+                                        ForeignText = sentence,
+                                        NativeText = txtOffset
+                                    });
+                                    sentence = "";
+                                }
+                                else
+                                {
+                                    sentence += " " + txtLine;
+                                    rowType = SubtitleRowType.Text;
+                                }
+                                break;
+                            case SubtitleRowType.Number:
+                                sentence = txtLine;
+                                break;
+                            case SubtitleRowType.TimeOffset:
+                                break;
+                            case SubtitleRowType.Text:
+                                if (!string.IsNullOrEmpty(sentence))
+                                    sentence += (string.IsNullOrEmpty(sentence) ? "" : " ") + txtLine;
+                                else
+                                    rowType = SubtitleRowType.EmptyString;
+                                break;
+                        }                        
                     }
 
                     if (!string.IsNullOrEmpty(sentence))
@@ -206,5 +229,13 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
         public RelayCommand BrowseFileCommand { get; private set; }
         public RelayCommand ParseFileCommand { get; private set; }
+    }
+
+    enum SubtitleRowType
+    {
+        EmptyString = 0,
+        Number = 1,
+        TimeOffset = 2,
+        Text = 3        
     }
 }

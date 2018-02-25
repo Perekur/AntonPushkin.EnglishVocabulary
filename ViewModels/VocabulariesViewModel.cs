@@ -95,20 +95,37 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
 
         private readonly IDialogService dialogService;
-        private readonly IDataService<VocabularyRecord> dataService;        
+        private readonly IDataService dataService;        
 
-        public VocabulariesViewModel(IDataService<VocabularyRecord> dataService, IDialogService dialogService)
+        public VocabulariesViewModel(IDataService dataService, IDialogService dialogService)
         {
             this.dialogService = dialogService;
             this.dataService = dataService;
 
             AddVocabularyCommand = new RelayCommand(AddVocabularyCommandHandler);
+            RenameVocabularyCommand = new RelayCommand(RenameVocabularyCommandHandler);
+        }
+
+        private void RenameVocabularyCommandHandler()
+        {            
+            var newName = InputBox.ShowDialog("New name of vocabulary:", SelectedVocabularyList.FileName, "Rename");
+            if (string.IsNullOrEmpty(newName)) return;
+
+            try
+            {
+                dataService.Rename(SelectedVocabularyList.FileName, newName);
+                SelectedVocabularyList.FileName = newName;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.ShowDialog(ex.Message, ex.GetType().Name, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
         }
 
         private void AddVocabularyCommandHandler()
         {
             int weekOfYear = DateTimeFormatInfo.CurrentInfo.Calendar.GetWeekOfYear(DateTime.Now, System.Globalization.CalendarWeekRule.FirstDay, DayOfWeek.Monday);
-            string defaultName = string.Format("Vocabulary{0}.{1:##}", DateTime.Now.Year, weekOfYear);
+            string defaultName =  string.Format("{0:MMdd}.Vocabulary{0:yyyy}.{1:0#}", DateTime.Now, weekOfYear);
 
             var strVocabularyName = InputBox.ShowDialog("Please, insert name of new Vocabulary", defaultName);
             if (string.IsNullOrEmpty(strVocabularyName)) return;
@@ -132,5 +149,6 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         }
 
         public RelayCommand AddVocabularyCommand { get; private set; }
+        public RelayCommand RenameVocabularyCommand { get; private set; }
     }
 }

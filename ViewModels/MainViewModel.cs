@@ -4,7 +4,6 @@ using PushkinA.EnglishVocabulary.Model;
 using PushkinA.EnglishVocabulary.Services;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System;
 
 namespace PushkinA.EnglishVocabulary.ViewModels
 {
@@ -27,7 +26,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             }
         }        
 
-        public MainViewModel(IDataService<VocabularyRecord> dataService, IDialogService dialogService)
+        public MainViewModel(IDataService dataService, IDialogService dialogService)
         {
             var files = dataService.GetFiles();
             var vocabularies = files.Select(file => new VocabularyListViewModel(dataService, dialogService) { FileName = file }).ToArray();

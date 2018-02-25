@@ -13,6 +13,7 @@
         </DataTemplate>
         <ContextMenu x:Key="contextMenu">
             <MenuItem Command="{Binding AddVocabularyCommand}" Header="Create new" Style="{x:Null}"/>
+            <MenuItem Command="{Binding RenameVocabularyCommand}" Header="Rename" Style="{x:Null}"/>
         </ContextMenu>
 
     </UserControl.Resources>
