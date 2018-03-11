@@ -16,7 +16,7 @@ using CommonServiceLocator;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 
-namespace PushkinA.EnglishVocabulary.ViewModels
+namespace PushkinA.EnglishVocabulary.ViewModel
 {
     /// <summary>
     /// This class contains static references to all the view models in the
@@ -31,15 +31,16 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            if (!ViewModelBase.IsInDesignModeStatic)
-            {
-                // Create run time view services and models
-                SimpleIoc.Default.Register<Services.IDataService, Services.DataService>();
-                SimpleIoc.Default.Register<Services.IDialogService, Services.DialogService>();
-                SimpleIoc.Default.Register<Services.IDialogService, Services.DialogService>();
-                SimpleIoc.Default.Register<Services.ITranslationService, Services.TranslationService>();
-                SimpleIoc.Default.Register<Services.ISpeachService, Services.SpeachService>();
-            }
+            ////if (ViewModelBase.IsInDesignModeStatic)
+            ////{
+            ////    // Create design time view services and models
+            ////    SimpleIoc.Default.Register<IDataService, DesignDataService>();
+            ////}
+            ////else
+            ////{
+            ////    // Create run time view services and models
+            ////    SimpleIoc.Default.Register<IDataService, DataService>();
+            ////}
 
             SimpleIoc.Default.Register<MainViewModel>();
         }
@@ -48,15 +49,11 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         {
             get
             {
-                return CommonServiceLocator.ServiceLocator.Current.GetInstance<MainViewModel>();
+                return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
         }
-
-        public static T Resolve<T>() {
-                return ServiceLocator.Current.GetInstance<T>();
-        }
-
-        public void Cleanup()
+        
+        public static void Cleanup()
         {
             // TODO Clear the ViewModels
         }

@@ -1,6 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Microsoft.Practices.ServiceLocation;
 using PushkinA.EnglishVocabulary.Infrastructure;
 using PushkinA.EnglishVocabulary.Model;
 using PushkinA.EnglishVocabulary.Services;
@@ -58,7 +57,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
         public static string ShowDialog(Window parent, string description, string defaultValue, string title="")
         {
-            var dialogService = ServiceLocator.Current.GetInstance<IDialogService>();
+            var dialogService = CommonServiceLocator.ServiceLocator.Current.GetInstance<IDialogService>();
 
             var retVal = string.Empty;
             var vm = new InputBoxViewModel((val) => retVal = val)

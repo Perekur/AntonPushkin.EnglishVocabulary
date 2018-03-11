@@ -1,15 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using PushkinA.EnglishVocabulary.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Data;
 using System.Windows.Forms;
-using System.Globalization;
 using System.Windows;
-using Microsoft.Practices.ServiceLocation;
 using PushkinA.EnglishVocabulary.Services;
 
 namespace PushkinA.EnglishVocabulary.ViewModels
@@ -120,7 +112,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
         public static DialogResult ShowDialog(Window parent, string message, string title = "", MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None)
         {
-            var dialogService = ServiceLocator.Current.GetInstance<IDialogService>();
+            var dialogService = CommonServiceLocator.ServiceLocator.Current.GetInstance<IDialogService>();
 
             var vm = new MessageBoxViewModel()
             {
