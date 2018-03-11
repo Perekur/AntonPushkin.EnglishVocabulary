@@ -19,7 +19,7 @@ namespace PushkinA.EnglishVocabulary.Services
 
     public class DataService : IDataService
     {
-        private static readonly string dataFolderName = Path.Combine(Environment.CurrentDirectory, "DATA");
+        private static readonly string dataFolderName = System.Environment.GetEnvironmentVariable("UserProfile") + @"\Dropbox\_Vocabularies"; //Path.Combine(Environment.CurrentDirectory, "DATA");
 
         public void Set<T>(T[] entities, string fileName = "")
         {
