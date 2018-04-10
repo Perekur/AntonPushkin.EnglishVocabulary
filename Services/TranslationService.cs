@@ -23,7 +23,7 @@ namespace PushkinA.EnglishVocabulary.Services
         public string Translate(string text, string fromCulture, string toCulture)
         {
             if (string.IsNullOrEmpty(text)) return string.Empty;
-            return TranslateText(text, string.Format("{0}|{1}", fromCulture, toCulture), System.Text.Encoding.Default);
+            return TranslateText(text, string.Format("{0}|{1}", fromCulture, toCulture));
         }
 
         ///
@@ -33,20 +33,31 @@ namespace PushkinA.EnglishVocabulary.Services
         /// e.g. "en|da" language pair means to translate from English to Danish
         /// The encoding.
         /// Translated to String
-        private string TranslateText(string input, string languagePair, Encoding encoding)
+        private string TranslateText(string input, string languagePair)
         {
+            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo("ru-ru");
             string url = String.Format("http://www.google.com/translate_t?hl=en&ie=UTF8&text={0}&langpair={1}", input, languagePair);
             string result = String.Empty;
-            using (WebClient webClient = new WebClient())
+            using (WebClient webClient = new WebClient() { Encoding = System.Text.Encoding.UTF8 })
             {
-                webClient.Encoding = encoding;
-                result = webClient.DownloadString(url);
+                webClient.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0");
+                result = webClient.DownloadString(url);                
             }
-
             result = result.Substring(result.IndexOf("<span title=\"") + "<span title=\"".Length);
             result = result.Substring(result.IndexOf(">") + 1);
             result = result.Substring(0, result.IndexOf("</span>"));
             return result.Trim();
+        }
+
+
+        private string ConvertUTF8ToDefault(string data)
+        {
+            var defEnc = System.Text.Encoding.ASCII;
+            var utf8 = Encoding.UTF8;
+
+            byte[] utfBytes = utf8.GetBytes(data);
+            byte[] defBytes = Encoding.Convert(utf8, defEnc, utfBytes);
+            return defEnc.GetString(defBytes);
         }
     }
 }
