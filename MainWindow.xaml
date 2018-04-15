@@ -7,7 +7,7 @@
         xmlns:vw="clr-namespace:PushkinA.EnglishVocabulary.Views"
         xmlns:vm ="clr-namespace:PushkinA.EnglishVocabulary.ViewModels"
         mc:Ignorable="d" DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
-        Title="MainWindow" Height="350" Width="525" Style="{StaticResource mainWindow}" x:Name="mainWindow">
+        Title="EnglishVocabulary" Height="350" Width="525" Style="{StaticResource mainWindow}" x:Name="mainWindow">
     <Window.Resources>
         <Style TargetType="{x:Type Button}">
             <Setter Property="Width" Value="100"/>
