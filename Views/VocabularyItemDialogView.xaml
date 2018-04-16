@@ -32,7 +32,7 @@
 
                 <!-- Grid.Row=1 -->
                 <TextBlock Text="ForeignText" Grid.Row="1"></TextBlock>
-                <TextBox Text="{Binding Path=Question.ForeignText, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1" Margin="6"/>
+                <TextBox Text="{Binding Path=Question.ForeignText, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1" Margin="6" AcceptsReturn="True"/>
                 <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">
                     <Button Command="{Binding SpeakForeignCommand}" Height="30">Speak</Button>
                     <Button Command="{Binding TranslateForeignCommand}" Height="30" Margin="0 3 0 0">Translate</Button>
@@ -42,7 +42,7 @@
 
                 <!-- Grid.Row=2 -->
                 <TextBlock Text="NativeText" Grid.Row="2"></TextBlock>
-                <TextBox Text="{Binding Path=Question.NativeText, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Grid.Row="2" Grid.Column="1" Margin="6"/>
+                <TextBox Text="{Binding Path=Question.NativeText, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Grid.Row="2" Grid.Column="1" Margin="6" AcceptsReturn="True"/>
                 <StackPanel Grid.Row="2" Grid.Column="2" VerticalAlignment="Center">
                     <Button Command="{Binding SpeakNativeCommand}" Height="30">Speak</Button>
                     <Button Command="{Binding TranslateNativeCommand}" Height="30" Margin="0 3 0 0">Translate</Button>
