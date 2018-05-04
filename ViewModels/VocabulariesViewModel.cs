@@ -175,7 +175,10 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             if (Vocabularies.Any(v => string.Compare(v.FileName, strVocabularyName, true) == 0))
                 MessageBox.ShowDialog(string.Format("Vocabulary '{0}' already exists.", strVocabularyName), "Warning");
             else
+            {
                 Vocabularies.Add(new VocabularyListViewModel(dataService, dialogService) { FileName = strVocabularyName });
+                dataService.Set(new VocabularyRecord[0], strVocabularyName);
+            }
 
             AddVocabularyCommand.RaiseCanExecuteChanged();
         }
