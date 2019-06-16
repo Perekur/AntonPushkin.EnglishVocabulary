@@ -163,7 +163,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         private void ParseFileCommandHandler()
         {
             var vm = new ParseTextViewModel(SaveParsedWords);
-            dialogService.ShowDialog(vm, "modalDialog");
+            dialogService.ShowDialog(vm, false, "modalDialog");
             ParseFileCommand.RaiseCanExecuteChanged();
             SaveCommandHandler();
         }
@@ -198,7 +198,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
                 (item) => { QuestionList.Add(new VocabularyRecordViewModel(item)); SaveCommand.Execute(null); }
             );
             vm.Question = question;
-            dialogService.ShowDialog(vm, "modalDialog");
+            dialogService.ShowDialog(vm, false, "modalDialog");
             RaiseCanExecuteChanged();
         }
 
@@ -208,7 +208,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
                 (item) => { SaveCommand.Execute(null); }
             );
             vm.Question = VocabularyItem;
-            dialogService.ShowDialog(vm, "modalDialog");
+            dialogService.ShowDialog(vm, false, "modalDialog");
             RaiseCanExecuteChanged();
         }
 

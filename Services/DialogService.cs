@@ -1,51 +1,79 @@
-﻿using PushkinA.EnglishVocabulary.ViewModels;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms;
 
 namespace PushkinA.EnglishVocabulary.Services
 {
+
     public interface IDialogViewModel
     {
-        void SetWindow(Window dialog);
-        void Close();
+        event EventHandler<EventArgs> CloseDialogRequested;
+        void OnClosing(object sender, EventArgs arg);
+        void OnLoaded(object sender, EventArgs arg);
+        string Title { get; }
     }
 
     public interface IDialogService
     {
-        void ShowDialog<T>(T ViewModel, string dialogStyle="") where T: class, IDialogViewModel;
+        void ShowDialog(IDialogViewModel viewModel, bool resizeable = false, string style = "DialogWindow");
+        void ShowInContainer(IDialogViewModel viewModel, bool onlyOneInstance = true);
     }
 
     public class DialogService : IDialogService
     {
-        public void ShowDialog<T>(T ViewModel, string dialogStyle="") where T : class, IDialogViewModel
-        {            
-            var window = new Window();
-            window.DataContext = ViewModel;
-            ViewModel.SetWindow(window);
-            
-            var contentPresenter = new ContentControl();
-            window.Content = contentPresenter;
+        private readonly IContainerViewModel _containerVm;
 
-            var binding = new System.Windows.Data.Binding();
-            binding.RelativeSource = new System.Windows.Data.RelativeSource(System.Windows.Data.RelativeSourceMode.Self);
-            binding.Path = new PropertyPath("DataContext");
-            binding.Mode = System.Windows.Data.BindingMode.OneWay;
+        //public DialogService(IContainerViewModel containerVm)
+        //{
+        //    _containerVm = containerVm ?? throw new ArgumentNullException(nameof(containerVm));
+        //}
 
-            contentPresenter.SetBinding(ContentControl.ContentProperty, binding);
-            contentPresenter.Margin = new Thickness(6.0);
+        public void ShowDialog(IDialogViewModel viewModel, bool resizeable, string style)
+        {
+            var window = new Window
+            {
+                Content = viewModel,
+                Title = viewModel.Title ?? string.Empty,
+                Owner = Application.Current.MainWindow,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                ShowInTaskbar = false,
+                ResizeMode = resizeable ? ResizeMode.CanResize : ResizeMode.NoResize,
+            };
 
-            var style = string.IsNullOrEmpty(dialogStyle) ? null: window.FindResource(dialogStyle) as Style;
-            window.Style = style != null ? style: window.Style;
+            window.Style = (Style)window.FindResource(style);
 
-            window.Owner = System.Windows.Application.Current.MainWindow;
-            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            viewModel.CloseDialogRequested += (s, args) => { window.Close(); };
+            window.Closing += (s, arg) => { viewModel.OnClosing(s, arg); };
+            window.Loaded += (s, arg) => { viewModel.OnLoaded(s, arg); };
+
             window.ShowDialog();
         }
+
+        public void ShowInContainer(IDialogViewModel viewModel, bool onlyOneInstance = true)
+        {
+            if (_containerVm.Items.Any(i => i.Title == viewModel.Title))
+                _containerVm.SelectedItem = _containerVm.Items.First(i => i.Title == viewModel.Title);
+            else
+                _containerVm.AddChildItemViewModel(viewModel);
+            viewModel.CloseDialogRequested += (s, args) => { _containerVm.RemoveChildItemViewModel(viewModel); };
+
+            //window.Closing += (s, arg) => { viewModel.OnClosing(s, arg); };
+            //window.Loaded += (s, arg) => { viewModel.OnLoaded(s, arg); };
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IContainerViewModel
+    {
+        void AddChildItemViewModel(IDialogViewModel viewModel);
+
+        IDialogViewModel SelectedItem { get; set; }
+
+        ObservableCollection<IDialogViewModel> Items { get; }
+
+        void RemoveChildItemViewModel(IDialogViewModel viewModel);
     }
 }

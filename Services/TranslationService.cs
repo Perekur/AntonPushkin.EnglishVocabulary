@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -8,6 +12,8 @@ using System.Windows.Forms;
 
 namespace PushkinA.EnglishVocabulary.Services
 {
+
+    //see src https://www.codeproject.com/Articles/12711/Google-Translator
     public interface ITranslationService
     {
         string Translate(string text, string fromCulture, string toCulture);
@@ -15,6 +21,11 @@ namespace PushkinA.EnglishVocabulary.Services
 
     public class TranslationService : ITranslationService
     {
+        private readonly Regex _regex;
+        public TranslationService()
+        {
+            _regex = new Regex("([^[,^\\\",^\\]]+)");
+        }
 
         /// Translates the text.///
         /// The input.
@@ -33,20 +44,34 @@ namespace PushkinA.EnglishVocabulary.Services
         /// e.g. "en|da" language pair means to translate from English to Danish
         /// The encoding.
         /// Translated to String
-        private string TranslateText(string input, string languagePair)
+        private string TranslateText(string input, string langPair)
         {
-            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo("ru-ru");
-            string url = String.Format("http://www.google.com/translate_t?hl=en&ie=UTF8&text={0}&langpair={1}", input, languagePair);
+            var langs = langPair.Split(new []{"|"}, StringSplitOptions.RemoveEmptyEntries);
+
+
+            string url = $"https://translate.googleapis.com/translate_a/single?client=gtx&sl={langs[0]}&tl={langs[1]}&dt=t&q={HttpUtility.UrlEncode(input)}";
+
+            //var url = $"https://translate.google.com/?hl=en&text={input}&langpair={langPair}#view=home&op=translate&sl={langs[0]}&tl=langs[1]]&text={input}";
+            //string url = String.Format("http://www.google.com/translate_t?hl=en&ie=UTF8&text={0}&langpair={1}", input, langPair);
             string result = String.Empty;
-            using (WebClient webClient = new WebClient() { Encoding = System.Text.Encoding.UTF8 })
+
+            using (var webClient = new WebClient() { Encoding = System.Text.Encoding.UTF8 })
             {
-                webClient.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0");
+                //webClient.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0");
+                webClient.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 " +
+                                             "(KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36");
+                webClient.Headers.Add("content-type", "application/json");
+
                 result = webClient.DownloadString(url);                
             }
-            result = result.Substring(result.IndexOf("<span title=\"") + "<span title=\"".Length);
-            result = result.Substring(result.IndexOf(">") + 1);
-            result = result.Substring(0, result.IndexOf("</span>"));
-            return result.Trim();
+
+            var matches = _regex.Matches(result);
+            foreach (Match match in matches)
+            {
+                return match.Value;
+            }
+
+            return string.Empty;
         }
 
 

@@ -13,7 +13,7 @@ namespace PushkinA.EnglishVocabulary.Styles
     {
         public CustomWindowChrome()
         {
-            InitializeComponent();
+            InitializeComponent();            
         }
 
         private bool isResizing = false;
@@ -70,7 +70,11 @@ namespace PushkinA.EnglishVocabulary.Styles
         {
             Window win = (Window)
                 ((FrameworkElement)sender).TemplatedParent;
-            win.DragMove();
+
+            if (e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 2)
+                win.WindowState = win.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+            else
+                win.DragMove();
         }
 
         private void cmdClose_Click(object sender, RoutedEventArgs e)

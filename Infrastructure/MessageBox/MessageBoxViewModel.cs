@@ -122,7 +122,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
                 Icon = icon
             };
 
-            dialogService.ShowDialog(vm, "modalDialog");
+            dialogService.ShowDialog(vm, false, "modalDialog");
             return vm.Result;
         }
     }

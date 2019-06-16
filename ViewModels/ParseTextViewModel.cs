@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using Application = System.Windows.Application;
 
 namespace PushkinA.EnglishVocabulary.ViewModels
 {
@@ -26,7 +27,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
 
             SaveCommand = new RelayCommand(SaveCommandHandler);
-            CancelCommand = new RelayCommand(() => { if (cts != null) cts.Cancel(); dialog.Close(); });
+            CancelCommand = new RelayCommand(() => { if (cts != null) cts.Cancel(); Close(); });
 
             BrowseFileCommand = new RelayCommand(BrowseFileCommandHandler, ()=> CanChangeFileName);
             ParseFileCommand = new RelayCommand(ParseFileCommandHandler, ()=> !string.IsNullOrEmpty(FileName));
@@ -139,7 +140,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
                         vocabulary.Add(new VocabularyRecord() { ForeignText = sentence, NativeText = txtOffset });
                     }
 
-                    dialog.Dispatcher.BeginInvoke(new Action(() => {
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() => {
                         onSaveParsedQuestions(vocabulary.ToArray());
                         Close();
                     }));
@@ -178,7 +179,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
 
                     var questions = dicWords.OrderByDescending(i => i.Value).Select(q => new VocabularyRecord() { ForeignText = q.Key, NativeText = q.Value.ToString() }).ToArray();
 
-                    dialog.Dispatcher.BeginInvoke(new Action(() => {
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() => {
                         onSaveParsedQuestions(questions);
                         Close();
                     }));                                       

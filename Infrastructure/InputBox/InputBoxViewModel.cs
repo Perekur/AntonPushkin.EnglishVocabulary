@@ -21,7 +21,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
             this.onSaveInput = onSaveInput;
 
             SaveCommand = new RelayCommand(SaveCommandHandler);
-            CancelCommand = new RelayCommand(() => { dialog.Close(); });
+            CancelCommand = new RelayCommand(() => { Close(); });
         }
 
         private string stringValue;
@@ -41,7 +41,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
         private void SaveCommandHandler()
         {
             if (onSaveInput != null) onSaveInput(StringValue);
-            dialog.Close();
+            Close();
         }
 
         public RelayCommand SaveCommand { get; private set; }
@@ -65,7 +65,7 @@ namespace PushkinA.EnglishVocabulary.ViewModels
                 Description = description,
                 StringValue = defaultValue
             };
-            dialogService.ShowDialog(vm, "modalDialog");
+            dialogService.ShowDialog(vm, false, "modalDialog");
             return retVal;
         }
     }
